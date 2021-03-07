@@ -1,0 +1,7 @@
+kits:
+  player:
+    - give {P} minecraft:stone 1 0 {ench:[{id:7,lvl:2}],display:{Lore:["Всем привет это кит игрок"]}}
+    - give {P} minecraft:diamond_sword 1 0 {display:{Lore:["Это тоже!"]},ench:[{id:48,lvl:15}]}
+  vip:
+    - give {P} minecraft:cactus 1 0 {ench:[{id:7,lvl:2}],display:{Lore:["Всем привет это кит вип"]}}
+    - give {P} minecraft:wooden_sword 1 0 {display:{Lore:["Это тоже!"]},ench:[{id:48,lvl:15}]}

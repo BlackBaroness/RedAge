@@ -1,0 +1,9 @@
+name: Shop
+version: ${project.version}
+main: ru.baronessdev.priv.shop.Core
+api-version: 1.16
+depend:
+  - Vault
+commands:
+  reloadshops:
+    permission: admin

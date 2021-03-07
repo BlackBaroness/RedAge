@@ -1,0 +1,26 @@
+Спавнеры мобов:
+  chunk: {chunk}
+  0:
+    icon:
+      ==: org.bukkit.inventory.ItemStack
+        type: CAVE_SPIDER_SPAWN_EGG
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §aСпавнер Пещерного паука
+          lore:
+            - '§6§lЦена: 39 монет'
+    price: 39
+    command: give <p> CAVE_SPIDER_SPAWN_EGG
+  1:
+    icon:
+      ==: org.bukkit.inventory.ItemStack
+        type: WITCH_SPAWN_EGG
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          display-name: §aСпавнер Ведьмы
+          lore:
+            - '§6§lЦена: 49 монет'
+    price: 39
+    command: give <p> WITCH_SPAWN_EGG

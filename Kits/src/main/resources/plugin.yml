@@ -1,0 +1,5 @@
+name: Kits
+version: ${project.version}
+main: ru.baronessdev.personal.kits.Kits
+depend:
+  - RedAge

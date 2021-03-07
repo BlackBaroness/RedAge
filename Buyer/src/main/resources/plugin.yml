@@ -1,0 +1,8 @@
+name: Buyer
+version: ${project.version}
+main: ru.baronessdev.personal.buyer.Buyer
+depend:
+  - Vault
+commands:
+  reloadbuyer:
+    permission: admin
