@@ -3,19 +3,18 @@ package ru.baronessdev.personal.buyer;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.RedAge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ public final class Buyer extends JavaPlugin implements Listener {
             inv.setItem(40, new ItemBuilder(Material.COMPASS).setName("§cОбновление списка предложений").setLore(timeString).build());
         }, 0, 20);
 
-        getCommand("reloadbuyer").setExecutor(((sender, command, label, args) -> {
+        RedAge.registerAdminCommand("buyer", "перезагружает скупщика", ((sender, args) -> {
             update();
             return true;
         }));
@@ -112,16 +111,8 @@ public final class Buyer extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    private void onCommand(PlayerCommandPreprocessEvent e) {
-        if (e.getMessage().equals("/location")) {
-            e.setCancelled(true);
-            e.getPlayer().sendMessage(getLocation(e.getPlayer().getLocation()));
-        }
-    }
-
-    @EventHandler
     private void onClick(PlayerInteractEntityEvent e) {
-        if (getLocation(e.getRightClicked().getLocation()).equals(location)) {
+        if (RedAge.formatLocation(e.getRightClicked().getLocation()).equals(location)) {
             e.setCancelled(true);
             e.getPlayer().openInventory(inv);
         }
@@ -151,7 +142,7 @@ public final class Buyer extends JavaPlugin implements Listener {
         econ.depositPlayer(p, money);
         if (right) p.closeInventory();
 
-        p.sendMessage(ChatColor.WHITE + "Вы получили " + ChatColor.RED + money + "$" + ChatColor.WHITE + ".");
+        RedAge.say(p, "Вы получили " + ChatColor.RED + money + "$" + ChatColor.WHITE + ".");
     }
 
     private void setupEconomy() {
@@ -188,9 +179,5 @@ public final class Buyer extends JavaPlugin implements Listener {
             if (item.getType().equals(material)) i = i + item.getAmount();
         }
         return i;
-    }
-
-    private String getLocation(Location l) {
-        return l.getWorld().getName() + " # " + (int) l.getX() + " # " + (int) l.getY() + " # " + (int) l.getZ();
     }
 }

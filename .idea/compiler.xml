@@ -2,10 +2,12 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="clans" />
         <module name="shop" />
         <module name="Main" />
         <module name="kits" />
@@ -15,6 +17,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="buyer" target="1.8" />
+      <module name="clans" target="1.8" />
       <module name="jobs" target="1.8" />
       <module name="kits" target="1.8" />
       <module name="Main" target="1.8" />

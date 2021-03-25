@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Main/Main.iml" filepath="$PROJECT_DIR$/Main/Main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/RedAge.iml" filepath="$PROJECT_DIR$/.idea/RedAge.iml" />
       <module fileurl="file://$PROJECT_DIR$/Buyer/buyer.iml" filepath="$PROJECT_DIR$/Buyer/buyer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Clans/clans.iml" filepath="$PROJECT_DIR$/Clans/clans.iml" />
       <module fileurl="file://$PROJECT_DIR$/Jobs/jobs.iml" filepath="$PROJECT_DIR$/Jobs/jobs.iml" />
       <module fileurl="file://$PROJECT_DIR$/Kits/kits.iml" filepath="$PROJECT_DIR$/Kits/kits.iml" />
       <module fileurl="file://$PROJECT_DIR$/Shop/shop.iml" filepath="$PROJECT_DIR$/Shop/shop.iml" />

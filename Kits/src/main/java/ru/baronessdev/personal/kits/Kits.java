@@ -23,7 +23,7 @@ public final class Kits extends JavaPlugin implements Listener {
         load();
         saveDefaultConfig();
         
-        RedAge.registerAdminCommand("kitreload", "перезагружает киты",(sender, args) -> {
+        RedAge.registerAdminCommand("kit", "перезагружает киты", (sender, args) -> {
             load();
             RedAge.say(sender, "Киты перезагружены");
             return true;

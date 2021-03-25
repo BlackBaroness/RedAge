@@ -12,10 +12,10 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.RedAge;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public final class Core extends JavaPlugin implements Listener {
 
@@ -27,9 +27,9 @@ public final class Core extends JavaPlugin implements Listener {
         load();
         setupEconomy();
 
-        Objects.requireNonNull(getCommand("reloadshops")).setExecutor(((sender, command, label, args) -> {
+        RedAge.registerAdminCommand("shop", "перезагружает все магазины", ((sender, args) -> {
             load();
-            sender.sendMessage("Done");
+            RedAge.say(sender, "Магазины перезагружены.");
             return true;
         }));
 
