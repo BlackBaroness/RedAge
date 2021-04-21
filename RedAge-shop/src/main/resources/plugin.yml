@@ -1,9 +1,9 @@
 name: Shop
 version: ${project.version}
-main: ru.baronessdev.priv.shop.Core
-api-version: 1.16
+main: ru.baronessdev.personal.redage.shop
 depend:
   - Vault
+  - RedAge
 commands:
   reloadshops:
     permission: admin

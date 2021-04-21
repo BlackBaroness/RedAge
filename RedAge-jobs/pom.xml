@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.baronessdev.personal</groupId>
-    <artifactId>jobs</artifactId>
+    <groupId>ru.baronessdev.personal.redage</groupId>
+    <artifactId>redage-jobs</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -61,10 +61,6 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -75,15 +71,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ru.baronessdev.personal</groupId>
-            <artifactId>redage</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>
+                /home/baroness/Документы/Projects/RedAge/Code/Vault.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>ru.baronessdev.personal.redage</groupId>
+            <artifactId>redagemain</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>
+                /home/baroness/Документы/Projects/RedAge/Code/RedAge-main/target/redage-main-1.0.jar
+            </systemPath>
         </dependency>
     </dependencies>
 </project>

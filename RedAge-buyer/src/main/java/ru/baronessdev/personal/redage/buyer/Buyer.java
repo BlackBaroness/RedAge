@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.buyer;
+package ru.baronessdev.personal.redage.buyer;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.baronessdev.personal.redage.RedAge;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,3 +181,4 @@ public final class Buyer extends JavaPlugin implements Listener {
         return i;
     }
 }
+

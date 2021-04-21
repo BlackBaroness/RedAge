@@ -11,11 +11,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.baronessdev.personal.clans.request.RequestManager;
 import ru.baronessdev.personal.clans.data.Data;
 import ru.baronessdev.personal.clans.objects.Clan;
-import ru.baronessdev.personal.clans.request.RequestManager;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.clans.util.SmartMessagesUtil;
-import ru.baronessdev.personal.redage.RedAge;
 
 import java.util.ArrayList;
 import java.util.List;

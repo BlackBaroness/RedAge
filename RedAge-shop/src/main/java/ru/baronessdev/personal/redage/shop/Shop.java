@@ -1,8 +1,6 @@
-package ru.baronessdev.priv.shop;
+package ru.baronessdev.personal.redage.shop;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Shop {
 

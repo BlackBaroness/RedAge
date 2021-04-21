@@ -7,7 +7,7 @@ import ru.baronessdev.personal.clans.commands.ClanCommand;
 import ru.baronessdev.personal.clans.data.Data;
 import ru.baronessdev.personal.clans.objects.Clan;
 import ru.baronessdev.personal.clans.war.WarManager;
-import ru.baronessdev.personal.redage.RedAge;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 public final class Clans extends JavaPlugin {
 

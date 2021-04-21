@@ -5,7 +5,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.clans.objects.Clan;
 import ru.baronessdev.personal.clans.util.ThreadUtil;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 public class Data {

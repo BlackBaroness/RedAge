@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.buyer;
+package ru.baronessdev.personal.redage.buyer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ItemBuilder {
 
     private String name;
@@ -81,3 +82,4 @@ public class ItemBuilder {
         return itemStack;
     }
 }
+

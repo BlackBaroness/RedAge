@@ -1,16 +1,14 @@
 package ru.baronessdev.personal.clans.war;
 
-import com.connorlinfoot.actionbarapi.ActionBarAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import ru.baronessdev.personal.clans.Clans;
 import ru.baronessdev.personal.clans.objects.Clan;
 import ru.baronessdev.personal.clans.util.ThreadUtil;
-import ru.baronessdev.personal.redage.RedAge;
+import ru.baronessdev.personal.clans.Clans;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
 import java.util.HashMap;

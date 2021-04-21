@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.kits;
+package ru.baronessdev.personal.redage.kits;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,7 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.baronessdev.personal.redage.RedAge;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +22,7 @@ public final class Kits extends JavaPlugin implements Listener {
     public void onEnable() {
         load();
         saveDefaultConfig();
-        
+
         RedAge.registerAdminCommand("kit", "- перезагружает киты", (sender, args) -> {
             load();
             RedAge.say(sender, "Киты перезагружены");
@@ -52,7 +52,7 @@ public final class Kits extends JavaPlugin implements Listener {
             }
 
 
-            RedAge.say(p, "Доступные киты:" + s.toString());
+            RedAge.say(p, "Доступные киты:" + s);
             return;
         }
         if (e.getMessage().startsWith("/kit ")) {

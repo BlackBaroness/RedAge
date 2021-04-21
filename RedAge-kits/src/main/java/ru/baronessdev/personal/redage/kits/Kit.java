@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.kits;
+package ru.baronessdev.personal.redage.kits;
 
 import java.util.List;
 

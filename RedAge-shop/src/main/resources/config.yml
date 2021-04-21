@@ -1,5 +1,5 @@
 Спавнеры мобов:
-  chunk: {chunk}
+  chunk: { chunk }
   0:
     icon:
       ==: org.bukkit.inventory.ItemStack

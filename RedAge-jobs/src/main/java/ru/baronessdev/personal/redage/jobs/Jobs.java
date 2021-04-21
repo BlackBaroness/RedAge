@@ -1,8 +1,8 @@
-package ru.baronessdev.personal.jobs;
+package ru.baronessdev.personal.redage.jobs;
 
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.baronessdev.personal.redage.RedAge;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 public final class Jobs extends JavaPlugin {
 

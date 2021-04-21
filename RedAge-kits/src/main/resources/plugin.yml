@@ -1,5 +1,5 @@
 name: Kits
 version: ${project.version}
-main: ru.baronessdev.personal.kits.Kits
+main: ru.baronessdev.personal.redage.kits.Kits
 depend:
   - RedAge

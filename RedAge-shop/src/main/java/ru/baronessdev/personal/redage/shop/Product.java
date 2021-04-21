@@ -1,4 +1,4 @@
-package ru.baronessdev.priv.shop;
+package ru.baronessdev.personal.redage.shop;
 
 import org.bukkit.inventory.ItemStack;
 
