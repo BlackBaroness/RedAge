@@ -1,7 +1,0 @@
-name: RedAge
-version: ${project.version}
-main: ru.baronessdev.personal.redage.RedAge
-commands:
-  redAge:
-    usage: /redAge
-    permission: admin
