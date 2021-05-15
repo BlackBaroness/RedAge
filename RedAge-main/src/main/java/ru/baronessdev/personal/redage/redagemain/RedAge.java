@@ -17,8 +17,13 @@ public final class RedAge extends JavaPlugin implements Listener {
     private static final HashMap<String, String> descriptions = new HashMap<>();
     private static final List<Player> loggers = new ArrayList<>();
 
+    protected static JavaPlugin instance;
+
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+        instance = this;
+
         getCommand("redage").setExecutor((sender, command, label, args) -> {
             if (args.length == 0) {
                 help(sender);
@@ -125,6 +130,10 @@ public final class RedAge extends JavaPlugin implements Listener {
                 Double.parseDouble(split[2]),
                 Double.parseDouble(split[3])
         );
+    }
+
+    protected static JavaPlugin getInstance() {
+        return instance;
     }
 }
 

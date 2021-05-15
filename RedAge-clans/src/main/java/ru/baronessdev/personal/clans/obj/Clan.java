@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
-import ru.baronessdev.personal.clans.util.ThreadUtil;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.Comparator;

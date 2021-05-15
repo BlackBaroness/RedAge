@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.clans.util;
+package ru.baronessdev.personal.redage.redagemain.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

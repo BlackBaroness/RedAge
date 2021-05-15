@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.request.RequestManager;
-import ru.baronessdev.personal.clans.util.SmartMessagesUtil;
+import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 import ru.baronessdev.personal.clans.war.War;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.clans.war.WarType;

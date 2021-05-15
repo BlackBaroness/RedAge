@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import ru.baronessdev.personal.clans.ClansPlugin;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
-import ru.baronessdev.personal.clans.util.ThreadUtil;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;

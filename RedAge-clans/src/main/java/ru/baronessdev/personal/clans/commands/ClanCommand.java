@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.request.RequestManager;
-import ru.baronessdev.personal.clans.util.ItemBuilder;
-import ru.baronessdev.personal.clans.util.SmartMessagesUtil;
+import ru.baronessdev.personal.redage.redagemain.util.ItemBuilder;
+import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 

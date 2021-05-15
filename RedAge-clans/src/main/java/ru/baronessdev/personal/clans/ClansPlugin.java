@@ -12,6 +12,7 @@ import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.war.WarListener;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,17 @@ public final class ClansPlugin extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         saveDefaultConfig();
+
+        SQLite database = new SQLite("clans",
+                "name", "VARCHAR(255) NOT NULL,",
+                "uuid", "VARCHAR(100) NOT NULL,",
+                "creation_date", "BIGINT NOT NULL,",
+                "last_war_date", "BIGINT NOT NULL,",
+                "has_battle_pass", "TINYINT NOT NULL DEFAULT '0',",
+                "war_count", "TINYINT NOT NULL DEFAULT '0',",
+
+                "# PRIMARY KEY (`uuid`)"
+        );
 
         // создание команд-менеджера
         PaperCommandManager commandManager = new PaperCommandManager(this);

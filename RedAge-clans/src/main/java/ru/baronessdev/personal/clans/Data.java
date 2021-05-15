@@ -3,7 +3,7 @@ package ru.baronessdev.personal.clans;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.clans.obj.Clan;
-import ru.baronessdev.personal.clans.util.ThreadUtil;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.List;

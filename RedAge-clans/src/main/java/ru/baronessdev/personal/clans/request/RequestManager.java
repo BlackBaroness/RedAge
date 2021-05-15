@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import ru.baronessdev.personal.clans.ClansPlugin;
-import ru.baronessdev.personal.clans.util.ThreadUtil;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.List;

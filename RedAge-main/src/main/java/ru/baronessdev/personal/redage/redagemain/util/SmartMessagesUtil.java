@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.clans.util;
+package ru.baronessdev.personal.redage.redagemain.util;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
