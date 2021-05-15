@@ -1,12 +1,13 @@
-package ru.baronessdev.personal.clans.objects;
+package ru.baronessdev.personal.clans.obj;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
-import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.clans.util.ThreadUtil;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,8 +37,10 @@ public class Clan {
     @Getter
     @Setter
     private List<String> members;
+    @Getter
+    private final long creationTime;
 
-    public Clan(UUID uuid, ItemStack icon, String name, String owner, int rating, boolean hasBattlePass, int battlePassPoints, List<String> members) {
+    public Clan(UUID uuid, ItemStack icon, String name, String owner, int rating, boolean hasBattlePass, int battlePassPoints, List<String> members, long creationTime) {
         this.uuid = uuid;
         this.icon = icon;
         this.name = name;
@@ -46,6 +49,7 @@ public class Clan {
         this.hasBattlePass = hasBattlePass;
         this.battlePassPoints = battlePassPoints;
         this.members = members;
+        this.creationTime = creationTime;
     }
 
     public void broadcast(String s) {
@@ -54,4 +58,6 @@ public class Clan {
                         .ofNullable(Bukkit.getPlayer(member))
                         .ifPresent(player -> RedAge.say(player, s))));
     }
+
+    public static final Comparator<Clan> COMPARE_BY_RATING = (lhs, rhs) -> lhs.getRating() + rhs.getRating();
 }

@@ -1,15 +1,23 @@
 package ru.baronessdev.personal.clans;
 
+import co.aikar.commands.PaperCommandManager;
+import com.google.common.collect.ImmutableList;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.clans.commands.ClanCommand;
-import ru.baronessdev.personal.clans.data.Data;
-import ru.baronessdev.personal.clans.objects.Clan;
+import ru.baronessdev.personal.clans.commands.ClanWarCommand;
+import ru.baronessdev.personal.clans.obj.Clan;
+import ru.baronessdev.personal.clans.war.WarListener;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
-public final class Clans extends JavaPlugin {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+public final class ClansPlugin extends JavaPlugin {
 
     public static JavaPlugin plugin;
 
@@ -17,8 +25,33 @@ public final class Clans extends JavaPlugin {
     public void onEnable() {
         plugin = this;
         saveDefaultConfig();
+
+        // создание команд-менеджера
+        PaperCommandManager commandManager = new PaperCommandManager(this);
+        commandManager.getLocales().setDefaultLocale(Locale.forLanguageTag("ru"));
+
+        // регистрация команд
+        commandManager.registerCommand(new ClanCommand());
+        commandManager.registerCommand(new ClanWarCommand());
+
+        // регистрация заполнений
+        commandManager.getCommandCompletions().registerCompletion("clanHelp", c ->
+                ImmutableList.of("create", "invite", "kick", "gui", "leave", "top", "setflag"));
+
+        commandManager.getCommandCompletions().registerCompletion("members", c -> {
+            Clan clan = Data.getClan(c.getPlayer());
+            return (clan == null) ? new ArrayList<>() : clan.getMembers();
+        });
+
+        commandManager.getCommandCompletions().registerCompletion("clans", c -> {
+            List<String> l = new ArrayList<>();
+            Data.clanListByRating().forEach(clan -> l.add(clan.getName()));
+            return l;
+        });
+
+
         Data.setup(this);
-        getCommand("clan").setExecutor(new ClanCommand());
+        Bukkit.getPluginManager().registerEvents(new WarListener(), this);
 
         RedAge.registerAdminCommand("clans", "- управление системой кланов", ((sender, args) -> {
             if (args.length == 0) {

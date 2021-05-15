@@ -1,10 +1,12 @@
-package ru.baronessdev.personal.clans.data;
+package ru.baronessdev.personal.clans;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.baronessdev.personal.clans.objects.Clan;
+import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.util.ThreadUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Data {
@@ -28,10 +30,22 @@ public class Data {
                         core.getConfig().getInt(id + ".rating"),
                         core.getConfig().getBoolean(id + ".hasBattlePass"),
                         core.getConfig().getInt(id + ".battlePassPoints"),
-                        core.getConfig().getStringList(id + ".members"));
+                        core.getConfig().getStringList(id + ".members"),
+                        (Long) core.getConfig().get(id + ".creationTime")
+                );
             }
         }
         return null;
+    }
+
+    public static boolean nameExists(String s) {
+        s = s.toLowerCase();
+        for (String id : core.getConfig().getKeys(false)) {
+            if (id.equals("settings")) continue;
+
+            if (core.getConfig().getString(id + ".name").toLowerCase().equals(s)) return true;
+        }
+        return false;
     }
 
     public static Clan getClan(UUID uuid) {
@@ -46,7 +60,8 @@ public class Data {
                         core.getConfig().getInt(id + ".rating"),
                         core.getConfig().getBoolean(id + ".hasBattlePass"),
                         core.getConfig().getInt(id + ".battlePassPoints"),
-                        core.getConfig().getStringList(id + ".members"));
+                        core.getConfig().getStringList(id + ".members"),
+                        (Long) core.getConfig().get(id + ".creationTime"));
             }
         }
         return null;
@@ -65,7 +80,8 @@ public class Data {
                         core.getConfig().getInt(id + ".rating"),
                         core.getConfig().getBoolean(id + ".hasBattlePass"),
                         core.getConfig().getInt(id + ".battlePassPoints"),
-                        core.getConfig().getStringList(id + ".members"));
+                        core.getConfig().getStringList(id + ".members"),
+                        (Long) core.getConfig().get(id + ".creationTime"));
             }
         }
         return null;
@@ -87,13 +103,30 @@ public class Data {
                 core.getConfig().set(path + ".hasBattlePass", clan.isHasBattlePass());
                 core.getConfig().set(path + ".battlePassPoints", clan.getBattlePassPoints());
                 core.getConfig().set(path + ".members", clan.getMembers());
+                core.getConfig().set(path + ".creationTime", clan.getCreationTime());
                 core.saveConfig();
             });
         }
     }
 
+    public static void saveClan(Clan... clans) {
+        for (Clan c : clans) saveClan(c);
+    }
+
     public static void deleteClan(Clan clan) {
         core.getConfig().set(clan.getUuid().toString(), null);
         core.saveConfig();
+    }
+
+    public static List<Clan> clanListByRating() {
+        List<Clan> l = new ArrayList<>();
+        core.getConfig().getKeys(false).forEach(k -> {
+            if (!k.equals("settings")) {
+                l.add(getClan(UUID.fromString(k)));
+            }
+        });
+
+        l.sort(Clan.COMPARE_BY_RATING);
+        return l;
     }
 }

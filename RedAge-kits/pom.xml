@@ -72,12 +72,9 @@
         </dependency>
         <dependency>
             <groupId>ru.baronessdev.personal.redage</groupId>
-            <artifactId>redagemain</artifactId>
+            <artifactId>redage-main</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>
-                /home/baroness/Документы/Projects/RedAge/Code/RedAge-main/target/redage-main-1.0.jar
-            </systemPath>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

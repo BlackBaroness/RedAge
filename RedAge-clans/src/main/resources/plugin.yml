@@ -1,6 +1,6 @@
 name: Clans
 version: ${project.version}
-main: ru.baronessdev.personal.clans.Clans
+main: ru.baronessdev.personal.clans.ClansPlugin
 commands:
   clan:
     aliases: c

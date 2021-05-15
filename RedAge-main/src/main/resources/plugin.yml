@@ -1,3 +1,6 @@
-name: RedAge Main
+name: RedAge_Main
 version: ${project.version}
 main: ru.baronessdev.personal.redage.redagemain.RedAge
+commands:
+  redage:
+    usage: /redage
