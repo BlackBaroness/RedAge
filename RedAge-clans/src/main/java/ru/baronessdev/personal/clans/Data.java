@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.baronessdev.personal.clans.enums.ChangeType;
 import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.redage.redagemain.database.Column;
@@ -106,7 +107,6 @@ public class Data {
         return null;
     }
 
-
     public Clan getClan(Player p) {
         String lowerCase = p.getName().toLowerCase();
         for (Clan clan : clans) {
@@ -115,41 +115,61 @@ public class Data {
         return null;
     }
 
-    public void saveClan(Clan clans) {
-        clansDatabase.execute(true, );
-            ThreadUtil.execute(() -> {
-                String path = clan.getUuid().toString();
+    public void saveClan(Clan clan, ChangeType changeType) {
+        String query = null;
 
-                core.getConfig().set(path + ".icon", clan.getIcon());
-                core.getConfig().set(path + ".name", clan.getName());
-                core.getConfig().set(path + ".owner", clan.getOwner());
-                core.getConfig().set(path + ".rating", clan.getRating());
-                core.getConfig().set(path + ".hasBattlePass", clan.isHasBattlePass());
-                core.getConfig().set(path + ".battlePassPoints", clan.getBattlePassPoints());
-                core.getConfig().set(path + ".members", clan.getMembers());
-                core.getConfig().set(path + ".creationTime", clan.getCreationTime());
-                core.saveConfig();
-            });
-        }
-    }
-
-    public static void saveClan(Clan... clans) {
-        for (Clan c : clans) saveClan(c);
-    }
-
-    public static void deleteClan(Clan clan) {
-        core.getConfig().set(clan.getUuid().toString(), null);
-        core.saveConfig();
-    }
-
-    public static List<Clan> clanListByRating() {
-        List<Clan> l = new ArrayList<>();
-        core.getConfig().getKeys(false).forEach(k -> {
-            if (!k.equals("settings")) {
-                l.add(getClan(UUID.fromString(k)));
+        switch (changeType) {
+            case NAME: {
+                query = "name =" + clan.getName();
+                break;
             }
-        });
+            case OWNER: {
+                query = "owner =" + clan.getOwner();
+                break;
+            }
+            case PREFIX: {
+                query = "prefix =" + clan.getPrefix();
+                break;
+            }
+            case RATING: {
+                query = "rating =" + clan.getRating();
+                break;
+            }
+            case HAS_BATTLE_PASS: {
+                query = "has_battle_pass =" + BooleanUtil.toInt(clan.isHasBattlePass());
+                break;
+            }
+            case BATTLE_PASS_POINTS: {
+                query = "battle_pass_points =" + clan.getBattlePassPoints();
+                break;
+            }
+            case MEMBERS: {
+                query = "members";
+                break;
+            }
+        }
 
+        if (query.equals("members")) {
+            /* обновление данных об участниках
+                чтобы не было конфликтов, делаем всё в одном большом потоке */
+            ThreadUtil.execute(() -> {
+                membersDatabase.execute(false, "DELETE * FROM !table! WHERE uuid=" + clan.getUuid());
+                clan.getMembers().forEach(member -> membersDatabase.execute(false, "INSERT INTO !table! (`name`, `uuid`)  VALUES " + String.format("('%s', '%s');", member, clan.getUuid().toString())));
+            });
+            return;
+        }
+
+        clansDatabase.execute(true, "UPDATE !table! SET " + query + " WHERE uuid = '" + clan.getUuid() + "'");
+    }
+
+    public void deleteClan(Clan clan) {
+        clans.remove(clan);
+        clansDatabase.execute(true, "DELETE * FROM !table! WHERE uuid=" + clan.getUuid());
+        membersDatabase.execute(true, "DELETE * FROM !table! WHERE uuid=" + clan.getUuid());
+    }
+
+    public List<Clan> clanListByRating() {
+        List<Clan> l = new ArrayList<>(clans);
         l.sort(Clan.COMPARE_BY_RATING);
         return l;
     }
