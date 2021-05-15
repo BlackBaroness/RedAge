@@ -132,7 +132,7 @@ public final class RedAge extends JavaPlugin implements Listener {
         );
     }
 
-    protected static JavaPlugin getInstance() {
+    public static JavaPlugin getInstance() {
         return instance;
     }
 }

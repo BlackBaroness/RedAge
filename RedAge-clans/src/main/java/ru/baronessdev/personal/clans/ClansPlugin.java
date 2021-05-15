@@ -12,7 +12,6 @@ import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.war.WarListener;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
-import ru.baronessdev.personal.redage.redagemain.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,23 +19,13 @@ import java.util.Locale;
 
 public final class ClansPlugin extends JavaPlugin {
 
-    public static JavaPlugin plugin;
-
     @Override
     public void onEnable() {
-        plugin = this;
         saveDefaultConfig();
 
-        SQLite database = new SQLite("clans",
-                "name", "VARCHAR(255) NOT NULL,",
-                "uuid", "VARCHAR(100) NOT NULL,",
-                "creation_date", "BIGINT NOT NULL,",
-                "last_war_date", "BIGINT NOT NULL,",
-                "has_battle_pass", "TINYINT NOT NULL DEFAULT '0',",
-                "war_count", "TINYINT NOT NULL DEFAULT '0',",
+        // подключение базы данных
+        Data.getInstance().setup();
 
-                "# PRIMARY KEY (`uuid`)"
-        );
 
         // создание команд-менеджера
         PaperCommandManager commandManager = new PaperCommandManager(this);
@@ -49,22 +38,20 @@ public final class ClansPlugin extends JavaPlugin {
         // регистрация заполнений
         commandManager.getCommandCompletions().registerCompletion("clanHelp", c ->
                 ImmutableList.of("create", "invite", "kick", "gui", "leave", "top", "setflag"));
-
         commandManager.getCommandCompletions().registerCompletion("members", c -> {
             Clan clan = Data.getClan(c.getPlayer());
             return (clan == null) ? new ArrayList<>() : clan.getMembers();
         });
-
         commandManager.getCommandCompletions().registerCompletion("clans", c -> {
             List<String> l = new ArrayList<>();
             Data.clanListByRating().forEach(clan -> l.add(clan.getName()));
             return l;
         });
 
-
-        Data.setup(this);
+        // регистрация слушателя войны
         Bukkit.getPluginManager().registerEvents(new WarListener(), this);
 
+        // регистрация субкоманды /redage clans
         RedAge.registerAdminCommand("clans", "- управление системой кланов", ((sender, args) -> {
             if (args.length == 0) {
                 helpAdmin(sender);
@@ -99,10 +86,6 @@ public final class ClansPlugin extends JavaPlugin {
                     RedAge.broadcast(ChatColor.AQUA + "Администратор " + sender.getName() + " удалил клан «" + clan.getName() + "»");
                     return true;
                 }
-                case "reload": {
-                    Data.setup(this);
-                    RedAge.say(sender, "Кланы перезагружены.");
-                }
             }
             return true;
         }));
@@ -121,6 +104,5 @@ public final class ClansPlugin extends JavaPlugin {
     private void helpAdmin(CommandSender s) {
         RedAge.say(s, ChatColor.AQUA + "clans rename [клан] [название]" + ChatColor.WHITE + " - переименовать клан");
         RedAge.say(s, ChatColor.AQUA + "clans delete [клан]" + ChatColor.WHITE + " - удалить клан");
-        RedAge.say(s, ChatColor.AQUA + "clans reload" + ChatColor.WHITE + " - перезагрузить плагин кланов");
     }
 }

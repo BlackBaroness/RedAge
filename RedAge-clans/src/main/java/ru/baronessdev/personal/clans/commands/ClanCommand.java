@@ -84,7 +84,7 @@ public class ClanCommand extends BaseCommand {
                 0,
                 false,
                 0,
-                members, new Date().getTime()));
+                members, prefix, new Date().getTime()));
         RedAge.broadcast(ChatColor.GREEN + p.getName() + " создаёт клан «" + args[1] + "»!");
 
         RedAge.say(p, ChatColor.AQUA + "Клан создан! " + ChatColor.WHITE + "Что же дальше?");

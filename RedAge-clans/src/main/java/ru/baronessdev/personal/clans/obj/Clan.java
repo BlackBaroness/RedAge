@@ -27,20 +27,23 @@ public class Clan {
     private String owner;
     @Getter
     @Setter
-    private int rating;
+    private long rating;
     @Getter
     @Setter
     private boolean hasBattlePass;
     @Getter
     @Setter
-    private int battlePassPoints;
+    private long battlePassPoints;
     @Getter
     @Setter
     private List<String> members;
     @Getter
+    @Setter
+    private String prefix;
+    @Getter
     private final long creationTime;
 
-    public Clan(UUID uuid, ItemStack icon, String name, String owner, int rating, boolean hasBattlePass, int battlePassPoints, List<String> members, long creationTime) {
+    public Clan(UUID uuid, ItemStack icon, String name, String owner, long rating, boolean hasBattlePass, long battlePassPoints, List<String> members, String prefix, long creationTime) {
         this.uuid = uuid;
         this.icon = icon;
         this.name = name;
@@ -49,6 +52,7 @@ public class Clan {
         this.hasBattlePass = hasBattlePass;
         this.battlePassPoints = battlePassPoints;
         this.members = members;
+        this.prefix = prefix;
         this.creationTime = creationTime;
     }
 
@@ -59,5 +63,5 @@ public class Clan {
                         .ifPresent(player -> RedAge.say(player, s))));
     }
 
-    public static final Comparator<Clan> COMPARE_BY_RATING = (lhs, rhs) -> lhs.getRating() + rhs.getRating();
+    public static final Comparator<Clan> COMPARE_BY_RATING = (lhs, rhs) -> (int) (lhs.getRating() + rhs.getRating());
 }
