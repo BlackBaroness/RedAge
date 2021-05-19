@@ -1,3 +1,5 @@
 name: Jobs
 version: ${project.version}
-main: ru.baronessdev.personal.jobs.Jobs
+main: ru.baronessdev.personal.redage.jobs.Jobs
+depend:
+  - RedAge

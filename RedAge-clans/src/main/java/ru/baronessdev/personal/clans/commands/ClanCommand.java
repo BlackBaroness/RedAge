@@ -12,12 +12,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.baronessdev.personal.clans.Data;
+import ru.baronessdev.personal.clans.gui.CurrentGUI;
+import ru.baronessdev.personal.clans.gui.available.MainClansGUI;
+import ru.baronessdev.personal.clans.gui.base.GUI;
 import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.request.RequestManager;
-import ru.baronessdev.personal.redage.redagemain.util.ItemBuilder;
-import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.util.ItemBuilder;
+import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Optional;
@@ -272,5 +275,18 @@ public class ClanCommand extends BaseCommand {
         clan.syncMembers();
         clan.broadcast(ChatColor.RED + p.getName() + ChatColor.WHITE + " покинул клан.");
         RedAge.say(p, "Вы покинули клан.");
+    }
+
+    @Subcommand("gui")
+    public void gui(Player p) {
+        Clan clan = Data.getInstance().getClan(p);
+        if (clan == null) {
+            RedAge.say(p, ChatColor.RED + "Вы не находитесь в клане.");
+            return;
+        }
+
+        GUI gui = new MainClansGUI(p);
+        p.openInventory(gui.buildMenu());
+        CurrentGUI.memory.put(p, gui);
     }
 }

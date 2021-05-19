@@ -2,7 +2,6 @@ name: Shop
 version: ${project.version}
 main: ru.baronessdev.personal.redage.shop
 depend:
-  - Vault
   - RedAge
 commands:
   reloadshops:
