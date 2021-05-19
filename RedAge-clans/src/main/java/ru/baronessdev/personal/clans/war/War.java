@@ -71,12 +71,12 @@ public class War {
     public Clan remove(Player p) {
         if (firstClanPlayers.contains(p)) {
             firstClanPlayers.remove(p);
-            return Data.getClan(firstClan);
+            return Data.getInstance().getClan(firstClan);
         }
 
         if (secondClanPlayers.contains(p)) {
             secondClanPlayers.remove(p);
-            return Data.getClan(secondClan);
+            return Data.getInstance().getClan(secondClan);
         }
 
         return null;

@@ -33,7 +33,7 @@ public class ClanCommand extends BaseCommand {
     @HelpCommand
     @CommandCompletion("@clanHelp")
     public void unknown(Player p) {
-        Clan c = Data.getClan(p);
+        Clan c = Data.getInstance().getClan(p);
         String clan = (c != null) ? c.getName() : "нет";
 
         p.sendMessage(ChatColor.RED + "╭━─━─━─━─━─━─≪ " + ChatColor.WHITE + "Команды кланов" + ChatColor.RED + " ≫─━─━─━─━─━─━╮");
@@ -54,38 +54,38 @@ public class ClanCommand extends BaseCommand {
 
     @Subcommand("create")
     public void create(Player p, String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             unknown(p);
             return;
         }
 
-        if (Data.hasClan(p)) {
+        if (Data.getInstance().hasClan(p)) {
             RedAge.say(p, ChatColor.RED + "Сначала покиньте ваш текущий клан!");
             return;
         }
 
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
-        if (!pattern.matcher(args[1]).matches()) {
+        if (!pattern.matcher(args[0]).matches()) {
             RedAge.say(p, ChatColor.RED + "Название клана может состоять только из латиницы, цифр и \"_\"!");
             return;
         }
 
-        if (Data.nameExists(args[1])) {
+        if (Data.getInstance().getClan(args[0]) != null) {
             RedAge.say(p, ChatColor.RED + "Клан с таким названием уже существует!");
             return;
         }
 
         List<String> members = new ArrayList<>();
         members.add(p.getName().toLowerCase());
-        Data.saveClan(new Clan(UUID.randomUUID(),
+        Data.getInstance().createClan(new Clan(UUID.randomUUID(),
                 new ItemStack(Material.STONE),
-                args[1],
+                args[0],
                 p.getName(),
                 0,
                 false,
                 0,
-                members, prefix, new Date().getTime()));
-        RedAge.broadcast(ChatColor.GREEN + p.getName() + " создаёт клан «" + args[1] + "»!");
+                members, "", System.currentTimeMillis()));
+        RedAge.broadcast(ChatColor.GREEN + p.getName() + " создаёт клан «" + args[0] + "»!");
 
         RedAge.say(p, ChatColor.AQUA + "Клан создан! " + ChatColor.WHITE + "Что же дальше?");
         RedAge.say(p, "Установите знамя своего клана через " + ChatColor.RED + "/clan setflag" + ChatColor.WHITE + ",");
@@ -96,7 +96,7 @@ public class ClanCommand extends BaseCommand {
     @Subcommand("accept")
     @CommandCompletion("@clans")
     public void accept(Player p, String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             unknown(p);
             return;
         }
@@ -107,12 +107,12 @@ public class ClanCommand extends BaseCommand {
     @Subcommand("invite")
     @CommandCompletion("@players")
     public void invite(Player p, String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             unknown(p);
             return;
         }
 
-        Clan clan = Data.getClan(p);
+        Clan clan = Data.getInstance().getClan(p);
         if (clan == null) {
             RedAge.say(p, ChatColor.RED + "Вы не находитесь в клане.");
             return;
@@ -123,13 +123,13 @@ public class ClanCommand extends BaseCommand {
             return;
         }
 
-        Player invited = Bukkit.getPlayer(args[1]);
+        Player invited = Bukkit.getPlayer(args[0]);
         if (invited == null) {
             RedAge.say(p, ChatColor.RED + "Игрок не найден.");
             return;
         }
 
-        if (Data.hasClan(invited)) {
+        if (Data.getInstance().hasClan(invited)) {
             RedAge.say(p, ChatColor.RED + "Игрок уже состоит в клане.");
             return;
         }
@@ -138,11 +138,11 @@ public class ClanCommand extends BaseCommand {
                 "/clan accept " + clan.getName(),
                 30,
                 () -> {
-                    Clan actual = Data.getClan(clan.getUuid());
+                    Clan actual = Data.getInstance().getClan(clan.getUuid());
                     if (actual == null) return;
 
                     actual.getMembers().add(invited.getName().toLowerCase());
-                    Data.saveClan(actual);
+                    actual.syncMembers();
 
                     RedAge.say(invited, "Вы вступили в клан " + ChatColor.RED + actual.getName() + ChatColor.WHITE + ".");
                     actual.broadcast("В вашем клане новый участник: " + ChatColor.RED + invited.getName() + ChatColor.WHITE + "!");
@@ -161,17 +161,17 @@ public class ClanCommand extends BaseCommand {
     @Subcommand("kick")
     @CommandCompletion("@members")
     public void kick(Player p, String[] args) {
-        if (args.length != 2) {
+        if (args.length != 1) {
             unknown(p);
             return;
         }
 
-        if (args[1].equalsIgnoreCase(p.getName())) {
+        if (args[0].equalsIgnoreCase(p.getName())) {
             RedAge.say(p, ChatColor.RED + "Вы не можете исключить сами себя.");
             return;
         }
 
-        Clan clan = Data.getClan(p);
+        Clan clan = Data.getInstance().getClan(p);
         if (clan == null) {
             RedAge.say(p, ChatColor.RED + "Вы не находитесь в клане.");
             return;
@@ -182,7 +182,7 @@ public class ClanCommand extends BaseCommand {
             return;
         }
 
-        String nick = args[1].toLowerCase();
+        String nick = args[0].toLowerCase();
         if (!clan.getMembers().contains(nick)) {
             RedAge.say(p, ChatColor.RED + "Игрок не находится в клане.");
             return;
@@ -194,15 +194,16 @@ public class ClanCommand extends BaseCommand {
         }
 
         clan.getMembers().remove(nick);
-        Data.saveClan(clan);
+        clan.syncMembers();
 
-        clan.broadcast("Игрок " + ChatColor.RED + args[1] + ChatColor.WHITE + " был " + ChatColor.RED + "исключён " + ChatColor.WHITE + "из клана.");
+        clan.broadcast("Игрок " + ChatColor.RED + args[0] + ChatColor.WHITE + " был " + ChatColor.RED + "исключён " + ChatColor.WHITE + "из клана.");
         Optional.ofNullable(Bukkit.getPlayer(nick)).ifPresent(player -> RedAge.say(player, "Вы были " + ChatColor.RED + "исключены" + ChatColor.WHITE + " из клана " + ChatColor.RED + clan.getName() + ChatColor.WHITE + "."));
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Subcommand("setflag")
     public void setflag(Player p) {
-        Clan clan = Data.getClan(p);
+        Clan clan = Data.getInstance().getClan(p);
         if (clan == null) {
             RedAge.say(p, ChatColor.RED + "Вы не находитесь в клане.");
             return;
@@ -219,19 +220,17 @@ public class ClanCommand extends BaseCommand {
         }
 
         clan.setIcon(p.getInventory().getItemInMainHand());
-        Data.saveClan(clan);
-
         RedAge.say(p, "Вы успешно изменили знамя своего клана.");
     }
 
     @Subcommand("top")
     public void top(Player p) {
-        Clan var = Data.getClan(p);
+        Clan var = Data.getInstance().getClan(p);
         String current = (var != null) ? var.getName() : "";
 
         Inventory menu = Bukkit.createInventory(null, 54, "Рейтинг кланов");
         int i = 0;
-        for (Clan c : Data.clanListByRating()) {
+        for (Clan c : Data.getInstance().clanListByRating()) {
             if (i == 54) break;
 
             Date date = new Date(c.getCreationTime());
@@ -258,7 +257,7 @@ public class ClanCommand extends BaseCommand {
 
     @Subcommand("leave")
     public void leave(Player p) {
-        Clan clan = Data.getClan(p);
+        Clan clan = Data.getInstance().getClan(p);
         if (clan == null) {
             RedAge.say(p, ChatColor.RED + "Вы не находитесь в клане.");
             return;
@@ -270,7 +269,7 @@ public class ClanCommand extends BaseCommand {
         }
 
         clan.getMembers().remove(p.getName().toLowerCase());
-        Data.saveClan(clan);
+        clan.syncMembers();
         clan.broadcast(ChatColor.RED + p.getName() + ChatColor.WHITE + " покинул клан.");
         RedAge.say(p, "Вы покинули клан.");
     }

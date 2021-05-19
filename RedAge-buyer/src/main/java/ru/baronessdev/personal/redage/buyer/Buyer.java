@@ -29,7 +29,7 @@ public final class Buyer extends JavaPlugin implements Listener {
     private final Inventory inv = Bukkit.createInventory(null, 9 * 6, "Скупщик");
     private final HashMap<Material, Integer> prices = new HashMap<>();
     private String location;
-    private Economy econ;
+    private Economy econ = RedAge.getEconomy();
 
     @Override
     public void onEnable() {

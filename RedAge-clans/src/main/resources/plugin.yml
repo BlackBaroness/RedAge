@@ -1,6 +1,8 @@
-name: Clans
+name: RedAge_Clans
 version: ${project.version}
 main: ru.baronessdev.personal.clans.ClansPlugin
+depend:
+  - RedAge_Main
 commands:
   clan:
     aliases: c

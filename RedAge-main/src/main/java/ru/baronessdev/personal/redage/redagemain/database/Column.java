@@ -4,7 +4,7 @@ public class Column {
 
     private final String name;
     private final ColumnType type;
-    private boolean notNull = true;
+    private boolean notNull = false;
     private String defaultValue;
 
     public Column(String name, ColumnType type) {
@@ -25,7 +25,7 @@ public class Column {
     @Override
     public String toString() {
         return "`" + name + "` " + type +
-                ((type.size != 0) ? type.size : "") +
+                ((type.size != 0) ? "(" + type.size + ")" : "") +
                 ((notNull) ? " NOT NULL" : "") +
                 ((defaultValue != null)
                         ? " DEFAULT '" + defaultValue + "'"

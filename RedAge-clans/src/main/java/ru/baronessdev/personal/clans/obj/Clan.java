@@ -1,12 +1,16 @@
 package ru.baronessdev.personal.clans.obj;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
+import ru.baronessdev.personal.clans.Data;
+import ru.baronessdev.personal.clans.enums.ChangeType;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -17,28 +21,20 @@ public class Clan {
     @Getter
     private final UUID uuid;
     @Getter
-    @Setter
     private ItemStack icon;
     @Getter
-    @Setter
     private String name;
     @Getter
-    @Setter
     private String owner;
     @Getter
-    @Setter
     private long rating;
     @Getter
-    @Setter
     private boolean hasBattlePass;
     @Getter
-    @Setter
     private long battlePassPoints;
     @Getter
-    @Setter
-    private List<String> members;
+    private final List<String> members;
     @Getter
-    @Setter
     private String prefix;
     @Getter
     private final long creationTime;
@@ -61,6 +57,54 @@ public class Clan {
                 members.forEach(member -> Optional
                         .ofNullable(Bukkit.getPlayer(member))
                         .ifPresent(player -> RedAge.say(player, s))));
+    }
+
+    public void setIcon(ItemStack icon) {
+        this.icon = icon;
+        ThreadUtil.execute(() -> {
+            File file = new File(RedAge.getInstance().getDataFolder() + File.separator + "clans_icons" + File.separator + uuid);
+            YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+            yaml.set("-", icon);
+            try {
+                yaml.save(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        Data.getInstance().saveClan(this, ChangeType.NAME);
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+        Data.getInstance().saveClan(this, ChangeType.OWNER);
+    }
+
+    public void setRating(long rating) {
+        this.rating = rating;
+        Data.getInstance().saveClan(this, ChangeType.RATING);
+    }
+
+    public void setHasBattlePass(boolean hasBattlePass) {
+        this.hasBattlePass = hasBattlePass;
+        Data.getInstance().saveClan(this, ChangeType.HAS_BATTLE_PASS);
+    }
+
+    public void setBattlePassPoints(long battlePassPoints) {
+        this.battlePassPoints = battlePassPoints;
+        Data.getInstance().saveClan(this, ChangeType.BATTLE_PASS_POINTS);
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+        Data.getInstance().saveClan(this, ChangeType.PREFIX);
+    }
+
+    public void syncMembers() {
+        Data.getInstance().saveClan(this, ChangeType.MEMBERS);
     }
 
     public static final Comparator<Clan> COMPARE_BY_RATING = (lhs, rhs) -> (int) (lhs.getRating() + rhs.getRating());

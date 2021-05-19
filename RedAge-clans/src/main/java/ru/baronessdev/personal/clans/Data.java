@@ -40,7 +40,7 @@ public class Data {
     // ===================================
 
 
-    private List<Clan> clans;
+    private final List<Clan> clans = new ArrayList<>();
 
     private SQLite clansDatabase;
     private SQLite membersDatabase;
@@ -84,7 +84,7 @@ public class Data {
             long battlePassPoints = rs.getLong("battle_pass_points");
 
             List<String> members = new ArrayList<>();
-            ResultSet membersResult = membersDatabase.executeQuery("SELECT * FROM !table! WHERE `uuid`=" + id);
+            ResultSet membersResult = membersDatabase.executeQuery("SELECT * FROM !table! WHERE `uuid`='" + id + "'");
             while (membersResult.next()) {
                 members.add(membersResult.getString("name"));
             }
@@ -120,27 +120,27 @@ public class Data {
 
         switch (changeType) {
             case NAME: {
-                query = "name =" + clan.getName();
+                query = "name ='" + clan.getName() + "'";
                 break;
             }
             case OWNER: {
-                query = "owner =" + clan.getOwner();
+                query = "owner ='" + clan.getOwner() + "'";
                 break;
             }
             case PREFIX: {
-                query = "prefix =" + clan.getPrefix();
+                query = "prefix ='" + clan.getPrefix() + "'";
                 break;
             }
             case RATING: {
-                query = "rating =" + clan.getRating();
+                query = "rating ='" + clan.getRating() + "'";
                 break;
             }
             case HAS_BATTLE_PASS: {
-                query = "has_battle_pass =" + BooleanUtil.toInt(clan.isHasBattlePass());
+                query = "has_battle_pass ='" + BooleanUtil.toInt(clan.isHasBattlePass()) + "'";
                 break;
             }
             case BATTLE_PASS_POINTS: {
-                query = "battle_pass_points =" + clan.getBattlePassPoints();
+                query = "battle_pass_points ='" + clan.getBattlePassPoints() + "'";
                 break;
             }
             case MEMBERS: {
@@ -153,7 +153,7 @@ public class Data {
             /* обновление данных об участниках
                 чтобы не было конфликтов, делаем всё в одном большом потоке */
             ThreadUtil.execute(() -> {
-                membersDatabase.execute(false, "DELETE * FROM !table! WHERE uuid=" + clan.getUuid());
+                membersDatabase.execute(false, "DELETE FROM !table! WHERE uuid='" + clan.getUuid() + "'");
                 clan.getMembers().forEach(member -> membersDatabase.execute(false, "INSERT INTO !table! (`name`, `uuid`)  VALUES " + String.format("('%s', '%s');", member, clan.getUuid().toString())));
             });
             return;
@@ -162,15 +162,32 @@ public class Data {
         clansDatabase.execute(true, "UPDATE !table! SET " + query + " WHERE uuid = '" + clan.getUuid() + "'");
     }
 
+    public void createClan(Clan clan) {
+        clans.add(clan);
+        clansDatabase.execute(false, "INSERT INTO !table! " +
+                "(`prefix`, `name`, `uuid`, `owner`, `creation_date`, `rating`, `has_battle_pass`, `battle_pass_points`)  VALUES " + String.format("('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
+                clan.getPrefix(), clan.getName(), clan.getUuid().toString(), clan.getOwner().toLowerCase(), clan.getCreationTime(), clan.getRating(), BooleanUtil.toInt(clan.isHasBattlePass()), clan.getBattlePassPoints()));
+
+        clan.syncMembers();
+    }
+
     public void deleteClan(Clan clan) {
         clans.remove(clan);
-        clansDatabase.execute(true, "DELETE * FROM !table! WHERE uuid=" + clan.getUuid());
-        membersDatabase.execute(true, "DELETE * FROM !table! WHERE uuid=" + clan.getUuid());
+        clansDatabase.execute(true, "DELETE FROM !table! WHERE uuid='" + clan.getUuid() + "'");
+        membersDatabase.execute(true, "DELETE FROM !table! WHERE uuid='" + clan.getUuid() + "'");
     }
 
     public List<Clan> clanListByRating() {
         List<Clan> l = new ArrayList<>(clans);
         l.sort(Clan.COMPARE_BY_RATING);
         return l;
+    }
+
+    public List<Clan> getClans() {
+        return new ArrayList<>(clans);
+    }
+
+    public boolean hasClan(Player p) {
+        return getClan(p) != null;
     }
 }

@@ -19,13 +19,15 @@ import java.util.Locale;
 
 public final class ClansPlugin extends JavaPlugin {
 
+    public static JavaPlugin plugin;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        plugin = this;
 
         // подключение базы данных
         Data.getInstance().setup();
-
 
         // создание команд-менеджера
         PaperCommandManager commandManager = new PaperCommandManager(this);
@@ -39,12 +41,12 @@ public final class ClansPlugin extends JavaPlugin {
         commandManager.getCommandCompletions().registerCompletion("clanHelp", c ->
                 ImmutableList.of("create", "invite", "kick", "gui", "leave", "top", "setflag"));
         commandManager.getCommandCompletions().registerCompletion("members", c -> {
-            Clan clan = Data.getClan(c.getPlayer());
+            Clan clan = Data.getInstance().getClan(c.getPlayer());
             return (clan == null) ? new ArrayList<>() : clan.getMembers();
         });
         commandManager.getCommandCompletions().registerCompletion("clans", c -> {
             List<String> l = new ArrayList<>();
-            Data.clanListByRating().forEach(clan -> l.add(clan.getName()));
+            Data.getInstance().getClans().forEach(clan -> l.add(clan.getName()));
             return l;
         });
 
@@ -63,13 +65,11 @@ public final class ClansPlugin extends JavaPlugin {
                     if (args.length != 3)
                         helpAdmin(sender);
 
-                    Clan clan = Data.getClan(args[1]);
+                    Clan clan = Data.getInstance().getClan(args[1]);
                     if (clanNotExists(clan, sender)) return true;
-                    assert clan != null;
 
                     RedAge.broadcast(ChatColor.AQUA + "Администратор " + sender.getName() + " изменил название клана «" + clan.getName() + "» на «" + args[2] + "»");
                     clan.setName(args[2]);
-                    Data.saveClan(clan);
                     return true;
                 }
                 case "delete": {
@@ -78,11 +78,10 @@ public final class ClansPlugin extends JavaPlugin {
                         return true;
                     }
 
-                    Clan clan = Data.getClan(args[1]);
+                    Clan clan = Data.getInstance().getClan(args[1]);
                     if (clanNotExists(clan, sender)) return true;
-                    assert clan != null;
 
-                    Data.deleteClan(clan);
+                    Data.getInstance().deleteClan(clan);
                     RedAge.broadcast(ChatColor.AQUA + "Администратор " + sender.getName() + " удалил клан «" + clan.getName() + "»");
                     return true;
                 }

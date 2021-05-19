@@ -1,5 +1,6 @@
 package ru.baronessdev.personal.redage.redagemain;
 
+import net.milkbowl.vault.economy.Economy;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,7 @@ public final class RedAge extends JavaPlugin implements Listener {
     private static final HashMap<String, AdminSubCommand> subCommands = new HashMap<>();
     private static final HashMap<String, String> descriptions = new HashMap<>();
     private static final List<Player> loggers = new ArrayList<>();
+    private static Economy economy;
 
     protected static JavaPlugin instance;
 
@@ -23,6 +25,7 @@ public final class RedAge extends JavaPlugin implements Listener {
     public void onEnable() {
         saveDefaultConfig();
         instance = this;
+        economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
 
         getCommand("redage").setExecutor((sender, command, label, args) -> {
             if (args.length == 0) {
@@ -125,7 +128,7 @@ public final class RedAge extends JavaPlugin implements Listener {
     public static Location formatLocation(String s) {
         String[] split = s.split("#");
         return new Location(
-                Bukkit.createWorld(new WorldCreator(split[0])),
+                Bukkit.createWorld(new WorldCreator(split[0].replace(" ", ""))),
                 Double.parseDouble(split[1]),
                 Double.parseDouble(split[2]),
                 Double.parseDouble(split[3])
@@ -134,6 +137,10 @@ public final class RedAge extends JavaPlugin implements Listener {
 
     public static JavaPlugin getInstance() {
         return instance;
+    }
+
+    public static Economy getEconomy() {
+        return economy;
     }
 }
 

@@ -25,7 +25,7 @@ public class SQLiteBuilder {
     }
 
     public SQLiteBuilder addIndex(String name) {
-        StringBuilder b = new StringBuilder(" (");
+        StringBuilder b = new StringBuilder("(");
         columnList.forEach(column -> b.append(column.getName()).append(", "));
 
         b.deleteCharAt(b.length() - 1);

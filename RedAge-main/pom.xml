@@ -12,6 +12,7 @@
     <name>Main</name>
 
     <properties>
+        <desktop>Рабочий стол</desktop>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -46,7 +47,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -54,10 +55,11 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
-                                <echo>Moving ready file to Desktop</echo>
-                                <move file="${basedir}/target/${project.build.finalName}.jar" tofile="${user.home}/Desktop/${project.build.finalName}.jar"/>
-                            </tasks>
+                            <target>
+                                <copy file="${basedir}/target/${project.build.finalName}.jar" tofile="${basedir}/../RedAge-main.jar"/>
+                                <move file="${basedir}/target/${project.build.finalName}.jar" tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
+                                <delete dir="${basedir}/target"/>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -80,6 +82,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -93,6 +99,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.20</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

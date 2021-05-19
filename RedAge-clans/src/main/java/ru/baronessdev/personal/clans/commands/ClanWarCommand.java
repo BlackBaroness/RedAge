@@ -43,7 +43,7 @@ public class ClanWarCommand extends BaseCommand {
     @Subcommand("send")
     @CommandCompletion("@clans")
     public void send(Player p, String[] args) {
-        if (args.length != 4) {
+        if (args.length != 2) {
             unknown(p);
             return;
         }
@@ -56,7 +56,7 @@ public class ClanWarCommand extends BaseCommand {
             return;
         }
 
-        Clan enemyClan = Data.getClan(args[2]);
+        Clan enemyClan = Data.getInstance().getClan(args[0]);
         if (enemyClan == null) {
             RedAge.say(p, ChatColor.RED + "Клан не существует.");
             return;
@@ -75,7 +75,7 @@ public class ClanWarCommand extends BaseCommand {
 
         WarType type;
         try {
-            type = WarType.valueOf(args[3]);
+            type = WarType.valueOf(args[1]);
         } catch (Exception e) {
             RedAge.say(p, "Доступные форматы: x3, x5, x10");
             return;
@@ -92,8 +92,8 @@ public class ClanWarCommand extends BaseCommand {
         }
 
         if (!RequestManager.sendRequest(enemyLeader, "/clan war accept " + clan.getName(), 60, () -> {
-            Clan one = Data.getClan(enemyClan.getUuid());
-            Clan two = Data.getClan(clan.getUuid());
+            Clan one = Data.getInstance().getClan(enemyClan.getUuid());
+            Clan two = Data.getInstance().getClan(clan.getUuid());
 
             if (WarManager.warExists()) return;
 
@@ -119,7 +119,7 @@ public class ClanWarCommand extends BaseCommand {
     @Subcommand("accept")
     @CommandCompletion("@clans")
     public void accept(Player p, String[] args) {
-        if (args.length != 3) {
+        if (args.length != 1) {
             unknown(p);
             return;
         }
@@ -155,7 +155,7 @@ public class ClanWarCommand extends BaseCommand {
     @Subcommand("kick")
     @CommandCompletion("@members")
     public void kick(Player p, String[] args) {
-        if (args.length != 3) {
+        if (args.length != 1) {
             unknown(p);
             return;
         }
@@ -179,15 +179,16 @@ public class ClanWarCommand extends BaseCommand {
             return;
         }
 
-        int remove = war.remove(clan.getUuid(), Bukkit.getPlayer(args[2]));
+        int remove = war.remove(clan.getUuid(), Bukkit.getPlayer(args[0]));
         if (remove == -1) {
             RedAge.say(p, "Игрок не находится в вашем боевом отряде.");
             return;
         }
 
-        clan.broadcast(ChatColor.RED + args[2] + ChatColor.RESET + " отстранён от войны [" + remove + "/" + war.getType().getPlayers() + "]");
+        clan.broadcast(ChatColor.RED + args[0] + ChatColor.RESET + " отстранён от войны [" + remove + "/" + war.getType().getPlayers() + "]");
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     @Subcommand("giveup")
     public void giveup(Player p) {
         Clan clan = checkClan(p);
@@ -214,7 +215,7 @@ public class ClanWarCommand extends BaseCommand {
 
 
     private Clan checkClan(Player p) {
-        Clan clan = Data.getClan(p);
+        Clan clan = Data.getInstance().getClan(p);
         if (clan == null) {
             RedAge.say(p, ChatColor.RED + "Вы не находитесь в клане.");
         }

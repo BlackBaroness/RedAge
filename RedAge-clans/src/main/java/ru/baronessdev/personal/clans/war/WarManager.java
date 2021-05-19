@@ -37,8 +37,8 @@ public class WarManager {
             int firstCount = w.getFirstClanPlayers().size();
             int secondCount = w.getSecondClanPlayers().size();
 
-            Clan firstClan = Data.getClan(w.getFirstClan());
-            Clan secondClan = Data.getClan(w.getSecondClan());
+            Clan firstClan = Data.getInstance().getClan(w.getFirstClan());
+            Clan secondClan = Data.getInstance().getClan(w.getSecondClan());
             assert firstClan != null;
             assert secondClan != null;
 
@@ -63,7 +63,6 @@ public class WarManager {
                 RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─━╯");
 
                 winner.setRating(winner.getRating() + 1);
-                Data.saveClan(winner);
                 w = null;
                 return;
             }
@@ -148,8 +147,8 @@ public class WarManager {
 
         boolean draw = firstCount == secondCount;
 
-        Clan firstClan = Data.getClan(w.getFirstClan());
-        Clan secondClan = Data.getClan(w.getSecondClan());
+        Clan firstClan = Data.getInstance().getClan(w.getFirstClan());
+        Clan secondClan = Data.getInstance().getClan(w.getSecondClan());
         assert firstClan != null;
         assert secondClan != null;
 
@@ -178,8 +177,6 @@ public class WarManager {
 
             firstClan.setRating(firstClan.getRating() + 1);
             secondClan.setRating(secondClan.getRating() + 1);
-
-            Data.saveClan(firstClan, secondClan);
             w = null;
 
             RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─━╯");
@@ -213,8 +210,6 @@ public class WarManager {
         RedAge.broadcast(secondLog.toString());
 
         winner.setRating(winner.getRating() + 1);
-
-        Data.saveClan(winner);
         w = null;
 
         RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─╯");
@@ -231,12 +226,11 @@ public class WarManager {
     }
 
     public static void giveUp(Clan c) {
-        Clan enemy = (w.getFirstClan().equals(c.getUuid())) ? Data.getClan(w.getSecondClan()) : Data.getClan(w.getFirstClan());
+        Clan enemy = (w.getFirstClan().equals(c.getUuid())) ? Data.getInstance().getClan(w.getSecondClan()) : Data.getInstance().getClan(w.getFirstClan());
         assert enemy != null;
         RedAge.broadcast("Клан " + ChatColor.RED + c.getName() + ChatColor.RESET + " сдаётся клану " + ChatColor.RED + enemy.getName() + "! Война отменена.");
 
         enemy.setRating(enemy.getRating() + 1);
-        Data.saveClan(enemy);
         w = null;
     }
 

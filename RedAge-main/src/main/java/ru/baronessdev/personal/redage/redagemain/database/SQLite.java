@@ -1,5 +1,6 @@
 package ru.baronessdev.personal.redage.redagemain.database;
 
+import org.bukkit.ChatColor;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.redage.redagemain.util.Task;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
@@ -49,6 +50,7 @@ public class SQLite {
     public void execute(boolean async, String... queries) {
         for (String query : queries) {
             query = setPlaceholder(query);
+            System.out.println(ChatColor.AQUA + query);
             String finalQuery = query;
             Task task = () -> {
                 checkConnection();
@@ -68,6 +70,7 @@ public class SQLite {
 
     public ResultSet executeQuery(String query) {
         query = setPlaceholder(query);
+        System.out.println(ChatColor.AQUA + query);
         checkConnection();
         ResultSet rs = null;
         try {

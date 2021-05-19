@@ -19,8 +19,8 @@ public class WarListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent e) {
         Player p = e.getEntity();
-        if (!p.getLocation().getWorld().getName().equals("warWorld ")) return;
-        Clan c = Data.getClan(p);
+        if (!p.getLocation().getWorld().getName().equals("warWorld")) return;
+        Clan c = Data.getInstance().getClan(p);
         e.setDeathMessage(p.getName() + " погиб в бою. " + ChatColor.RED + "[" + ((c != null) ? c.getName() : "неизвестный клан") + "]");
         WarManager.finishWar(false);
     }
@@ -28,7 +28,7 @@ public class WarListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
-        if (p.getLocation().getWorld().getName().equals("warWorld ")) {
+        if (p.getLocation().getWorld().getName().equals("warWorld")) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + p.getName());
         }
     }
@@ -48,8 +48,8 @@ public class WarListener implements Listener {
     public void onPlayerQuitInBattle(PlayerQuitEvent e) {
         if (WarManager.w != null && WarManager.w.getTimer() != null) {
             Player p = e.getPlayer();
-            if (!p.getLocation().getWorld().getName().equals("warWorld ")) return;
-            Clan c = Data.getClan(p);
+            if (!p.getLocation().getWorld().getName().equals("warWorld")) return;
+            Clan c = Data.getInstance().getClan(p);
             Arrays.stream(p.getInventory().getContents())
                     .forEach(i -> p.getLocation().getWorld().dropItem(p.getLocation(), i));
             p.getInventory().clear();
