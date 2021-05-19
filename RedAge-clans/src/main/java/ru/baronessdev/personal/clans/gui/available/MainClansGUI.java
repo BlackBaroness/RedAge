@@ -44,7 +44,7 @@ public class MainClansGUI extends GUI {
                 .build()
         );
 
-        return null;
+        return menu;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class MainClansGUI extends GUI {
             }
 
             case 23: {
-                return () -> p.performCommand("/c top");
+                return () -> p.performCommand("c top");
             }
 
             case 25: {
@@ -68,7 +68,7 @@ public class MainClansGUI extends GUI {
             }
 
             case 40: {
-                return () -> p.performCommand("/menu");
+                return () -> p.performCommand("menu");
             }
 
             default: return null;

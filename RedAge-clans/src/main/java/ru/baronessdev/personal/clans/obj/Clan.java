@@ -2,6 +2,7 @@ package ru.baronessdev.personal.clans.obj;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import ru.baronessdev.personal.clans.Data;
@@ -42,6 +43,7 @@ public class Clan {
     public Clan(UUID uuid, ItemStack icon, String name, String owner, long rating, boolean hasBattlePass, long battlePassPoints, List<String> members, String prefix, long creationTime) {
         this.uuid = uuid;
         this.icon = icon;
+        if (icon == null) this.icon = new ItemStack(Material.COBBLESTONE);
         this.name = name;
         this.owner = owner.toLowerCase();
         this.rating = rating;

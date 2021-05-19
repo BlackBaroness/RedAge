@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.clans.commands.ClanCommand;
 import ru.baronessdev.personal.clans.commands.ClanWarCommand;
+import ru.baronessdev.personal.clans.gui.GuiHandler;
 import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.war.WarListener;
 import ru.baronessdev.personal.clans.war.WarManager;
@@ -52,6 +53,9 @@ public final class ClansPlugin extends JavaPlugin {
 
         // регистрация слушателя войны
         Bukkit.getPluginManager().registerEvents(new WarListener(), this);
+
+        // регистрация слушателя гуи
+        Bukkit.getPluginManager().registerEvents(new GuiHandler(), this);
 
         // регистрация субкоманды /redage clans
         RedAge.registerAdminCommand("clans", "- управление системой кланов", ((sender, args) -> {
