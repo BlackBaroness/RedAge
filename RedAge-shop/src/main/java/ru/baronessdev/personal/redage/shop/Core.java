@@ -24,6 +24,7 @@ public final class Core extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
         load();
         setupEconomy();
 

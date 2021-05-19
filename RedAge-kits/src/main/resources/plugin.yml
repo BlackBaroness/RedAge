@@ -1,4 +1,4 @@
-name: Kits
+name: RedAge_Kits
 version: ${project.version}
 main: ru.baronessdev.personal.redage.kits.Kits
 depend:

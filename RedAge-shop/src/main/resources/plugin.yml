@@ -1,8 +1,5 @@
-name: Shop
+name: RedAge_Shop
 version: ${project.version}
-main: ru.baronessdev.personal.redage.shop
+main: ru.baronessdev.personal.redage.shop.Core
 depend:
   - RedAge
-commands:
-  reloadshops:
-    permission: admin

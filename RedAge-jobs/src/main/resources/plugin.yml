@@ -1,4 +1,4 @@
-name: Jobs
+name: RedAge_Jobs
 version: ${project.version}
 main: ru.baronessdev.personal.redage.jobs.Jobs
 depend:

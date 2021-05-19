@@ -12,7 +12,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
@@ -29,14 +28,13 @@ public final class Buyer extends JavaPlugin implements Listener {
     private final Inventory inv = Bukkit.createInventory(null, 9 * 6, "Скупщик");
     private final HashMap<Material, Integer> prices = new HashMap<>();
     private String location;
-    private Economy econ = RedAge.getEconomy();
+    private final Economy econ = RedAge.getEconomy();
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         Bukkit.getPluginManager().registerEvents(this, this);
         load();
-        setupEconomy();
 
         Bukkit.getScheduler().runTaskTimer(this, () -> {
             time = time + 1;
@@ -74,31 +72,28 @@ public final class Buyer extends JavaPlugin implements Listener {
         List<String> keysTest = new ArrayList<>(keysSet);
         keysTest.remove("loc");
 
-        List<String> keys = new ArrayList<>(keysTest);
+        List<Material> materials = new ArrayList<>();
         for (String s : keysTest) {
-            Material m = Material.getMaterial(s.toUpperCase());
+            Material m = Material.getMaterial(cfg.getString(s).toUpperCase());
             if (m == null) {
-                System.out.println(ChatColor.RED + s + " is null!");
-                keys.remove(s);
-            }
+                System.out.println(ChatColor.RED + s + " is null! " + cfg.getString(s).toUpperCase());
+            } else materials.add(m);
         }
 
         for (int i = 0; i < 27; i++) {
-            boolean wait = true;
-            int lucky = 0;
-            String s;
-            Material material = null;
-            while (wait) {
-                lucky = ThreadLocalRandom.current().nextInt(keys.size());
-                s = keys.get(lucky).toUpperCase();
-                material = Material.getMaterial(s);
-                if (keys.size() < 27) {
-                    wait = false;
-                } else wait = prices.containsKey(material);
+            Material material;
+            int lucky;
+            if (materials.size() < 27) {
+                RedAge.log("СЛИШКОМ МАЛО ТОВАРОВ: " + materials.size());
+                return;
             }
 
-            int price = cfg.getInt(keys.get(lucky));
+            lucky = ThreadLocalRandom.current().nextInt(materials.size());
+            material = materials.get(lucky);
 
+            int price = cfg.getInt((String.valueOf(lucky)));
+
+            RedAge.log("Создаю новый товар: " + material);
             inv.setItem(i, new ItemBuilder(material).setLore(
                     ChatColor.WHITE + "\"Куплю за " + ChatColor.RED + price + ChatColor.WHITE + " монет.\"",
                     "",
@@ -143,14 +138,6 @@ public final class Buyer extends JavaPlugin implements Listener {
         if (right) p.closeInventory();
 
         RedAge.say(p, "Вы получили " + ChatColor.RED + money + "$" + ChatColor.WHITE + ".");
-    }
-
-    private void setupEconomy() {
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return;
-        }
-        econ = rsp.getProvider();
     }
 
     private void removeItems(Player player, Material material, int amount) {
