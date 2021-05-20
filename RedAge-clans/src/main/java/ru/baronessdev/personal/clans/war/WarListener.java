@@ -21,6 +21,10 @@ public class WarListener implements Listener {
         Player p = e.getEntity();
         if (!p.getLocation().getWorld().getName().equals("warWorld")) return;
         Clan c = Data.getInstance().getClan(p);
+
+        Player killer = p.getKiller();
+        if (killer != null) Data.getInstance().addKillCount(killer);
+
         e.setDeathMessage(p.getName() + " погиб в бою. " + ChatColor.RED + "[" + ((c != null) ? c.getName() : "неизвестный клан") + "]");
         WarManager.finishWar(false);
     }

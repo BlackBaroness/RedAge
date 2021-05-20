@@ -17,6 +17,7 @@ import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 import java.io.File;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -178,6 +179,27 @@ public class Data {
                 clan.getPrefix(), clan.getName(), clan.getUuid().toString(), clan.getOwner().toLowerCase(), clan.getCreationTime(), clan.getRating(), BooleanUtil.toInt(clan.isHasBattlePass()), clan.getBattlePassPoints()));
 
         clan.syncMembers();
+    }
+
+    @SneakyThrows
+    public HashMap<String, Integer> getTopKills() {
+        HashMap<String, Integer> hashMap = new HashMap<>();
+        ResultSet rs = topKillsDatabase.executeQuery("SELECT * FROM !table!");
+        while (rs.next()) {
+            hashMap.put(rs.getString("name"), rs.getInt("count"));
+        }
+        return hashMap;
+    }
+
+    @SneakyThrows
+    public void addKillCount(Player p) {
+        ResultSet rs = topKillsDatabase.executeQuery("SELECT * FROM !table! WHERE name=" + p.getName());
+        int last = 0;
+        if (rs.next()) {
+            last = rs.getInt("count");
+        }
+        topKillsDatabase.execute(true, "DELETE FROM !table! WHERE name='" + p.getName() + "'");
+        topKillsDatabase.execute(true, "INSERT INTO !table! (`name`, `count`)  VALUES " + String.format("('%s', '%d');", p.getName(), last + 1));
     }
 
     public void deleteClan(Clan clan) {

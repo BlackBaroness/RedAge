@@ -1,5 +1,6 @@
 package ru.baronessdev.personal.clans.gui.available;
 
+import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -65,8 +66,11 @@ public class MembersGUI extends GUI {
             ItemStack item = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
             SkullMeta meta = (SkullMeta) item.getItemMeta();
             meta.setOwner(member);
+            meta.setLore(ImmutableList.of("§c§l" + member));
             item.setItemMeta(meta);
-            inv.setItem(i - 1, new ItemBuilder(item).setName("§c§l" + member).build());
+
+
+            inv.setItem(i - 1, item);
         }
         return inv;
     }
