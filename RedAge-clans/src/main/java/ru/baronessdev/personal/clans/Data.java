@@ -15,7 +15,7 @@ import ru.baronessdev.personal.redage.redagemain.util.BooleanUtil;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +44,7 @@ public class Data {
 
     private SQLite clansDatabase;
     private SQLite membersDatabase;
+    private SQLite topKillsDatabase;
 
     @SneakyThrows
     protected void setup() {
@@ -68,6 +69,14 @@ public class Data {
                 .addColumn(new Column("uuid", ColumnType.VARCHAR.setSize(100)))
                 .addPrimaryKey("name")
                 .addIndex("uuid")
+                .build();
+
+        // загрузка базы данных с топом убийств
+        topKillsDatabase = new SQLiteBuilder("clans_top_kills")
+                .addColumn(new Column("name", ColumnType.VARCHAR.setSize(100)))
+                .addColumn(new Column("count", ColumnType.BIGINT))
+                .addPrimaryKey("name")
+                .addIndex("name")
                 .build();
 
         // кэширование всех кланов
@@ -182,6 +191,38 @@ public class Data {
         l.sort(Clan.COMPARE_BY_RATING);
         return l;
     }
+
+    /*
+        todo тут короче заброски истории войн, потом надо сделать
+
+    public List<ArchiveWar> getArchiveWars(Clan clan) {
+        File f = new File(RedAge.getInstance().getDataFolder() + File.separator + "acrhiveWars" + File.separator + clan.getUuid());
+        if (!f.exists()) return new ArrayList<>();
+
+        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
+        List<ArchiveWar> l = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            if (cfg.contains(i + ""))
+                l.add(loadArchiveWar(cfg.getConfigurationSection(i + "")));
+        }
+        return l;
+    }
+
+    private ArchiveWar loadArchiveWar(ConfigurationSection s) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+        format.setTimeZone(TimeZone.getTimeZone("GMT+3"));
+
+        return new ArchiveWar(
+                s.getString("first"),
+                s.getString("second"),
+                s.getStringList("firstList"),
+                s.getStringList("secondList"),
+                s.getLong("date")
+        );
+    }
+
+     */
 
     public List<Clan> getClans() {
         return new ArrayList<>(clans);

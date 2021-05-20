@@ -10,7 +10,8 @@ public final class Jobs extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         RedAge.registerAdminCommand("jobs", "- перезагружает точки работ", ((sender, args) -> {
-            // todo релоад
+            reloadConfig();
+            sender.sendMessage("дело сделано");
             return true;
         }));
     }

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import ru.baronessdev.personal.clans.gui.available.comingSoon.BattlePassGUI;
 import ru.baronessdev.personal.clans.gui.base.GUI;
 import ru.baronessdev.personal.redage.redagemain.util.ItemBuilder;
 import ru.baronessdev.personal.redage.redagemain.util.Task;
@@ -52,11 +53,13 @@ public class MainClansGUI extends GUI {
         switch (slot) {
 
             case 19: {
-                return (clanRequired()) ? () -> {} : () -> openMenu(new BattlePassGUI(p));
+                return (clanRequired()) ? () -> {
+                } : () -> openMenu(new BattlePassGUI(p));
             }
 
             case 21: {
-                return (clanRequired()) ? () -> {} : () -> openMenu(new ClanwarGUI(p));
+                return (clanRequired()) ? () -> {
+                } : () -> openMenu(new ClanwarGUI(p));
             }
 
             case 23: {
@@ -64,14 +67,16 @@ public class MainClansGUI extends GUI {
             }
 
             case 25: {
-                return (clanRequired()) ? () -> {} : () -> openMenu(new MembersGUI(p));
+                return (clanRequired()) ? () -> {
+                } : () -> openMenu(new MembersGUI(p));
             }
 
             case 40: {
                 return () -> p.performCommand("menu");
             }
 
-            default: return null;
+            default:
+                return null;
         }
     }
 }
