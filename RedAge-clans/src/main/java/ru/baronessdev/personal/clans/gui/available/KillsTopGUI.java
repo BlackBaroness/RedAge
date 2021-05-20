@@ -35,7 +35,7 @@ public class KillsTopGUI extends GUI {
                     SkullMeta meta = (SkullMeta) item.getItemMeta();
                     meta.setOwner(stringIntegerEntry.getKey());
                     meta.setDisplayName("§c§l" + stringIntegerEntry.getKey() + " §f(" + i + ")");
-                    meta.setLore(ImmutableList.of("§c§lУбийств: §f500" + stringIntegerEntry.getValue()));
+                    meta.setLore(ImmutableList.of("§c§lУбийств: §f" + stringIntegerEntry.getValue()));
 
                     item.setItemMeta(meta);
                     menu.addItem(item);

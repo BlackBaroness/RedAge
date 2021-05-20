@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
 import ru.baronessdev.personal.clans.request.RequestManager;
-import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 import ru.baronessdev.personal.clans.war.War;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.clans.war.WarType;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 
 @CommandAlias("clanwar|cw")
 @SuppressWarnings("unused")
@@ -32,6 +32,7 @@ public class ClanWarCommand extends BaseCommand {
         p.sendMessage("/cw join" + ChatColor.RED + " - присоединиться к команде для текущей войны;");
         p.sendMessage("/cw kick [игрок]" + ChatColor.RED + " - исключить игрока из команды для текущей войны;");
         p.sendMessage("/cw giveup" + ChatColor.RED + " - сдаться (моментальный проигрыш);");
+        p.sendMessage("/cw gui" + ChatColor.RED + " - открыть меню клановой войны;");
         p.sendMessage(" ");
         new SmartMessagesUtil("Вы можете узнать больше о системе войн, " + ChatColor.RED + "нажав сюда.")
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Узнать больше").create()))
@@ -53,6 +54,11 @@ public class ClanWarCommand extends BaseCommand {
 
         if (!clan.getOwner().equalsIgnoreCase(p.getName())) {
             RedAge.say(p, ChatColor.RED + "Вы не являетесь лидером клана.");
+            return;
+        }
+
+        if (clan.getName().equalsIgnoreCase(args[0])) {
+            RedAge.say(p, ChatColor.RED + "Вы не можете объявить войну своему клану.");
             return;
         }
 
@@ -91,7 +97,7 @@ public class ClanWarCommand extends BaseCommand {
             return;
         }
 
-        if (!RequestManager.sendRequest(enemyLeader, "/clan war accept " + clan.getName(), 60, () -> {
+        if (!RequestManager.sendRequest(enemyLeader, "/cw accept " + clan.getName(), 60, () -> {
             Clan one = Data.getInstance().getClan(enemyClan.getUuid());
             Clan two = Data.getInstance().getClan(clan.getUuid());
 
@@ -101,17 +107,17 @@ public class ClanWarCommand extends BaseCommand {
             assert two != null;
             WarManager.scheduleWar(one, two, type);
 
-            one.broadcast("Война начнётся совсем скоро! Присоединяйтесь к ней, используя " + ChatColor.RED + "/clan war join" + ChatColor.WHITE + ".");
-            two.broadcast("Война начнётся совсем скоро! Присоединяйтесь к ней, используя " + ChatColor.RED + "/clan war join" + ChatColor.WHITE + ".");
+            one.broadcast("Война скоро начнётся! Присоединяйтесь к ней, используя " + ChatColor.RED + "/cw join" + ChatColor.WHITE + ".");
+            two.broadcast("Война скоро начнётся! Присоединяйтесь к ней, используя " + ChatColor.RED + "/cw join" + ChatColor.WHITE + ".");
         })) {
             RedAge.say(p, "У этого клана уже есть запрос от вас.");
             return;
         }
 
         enemyLeader.sendMessage("Клан " + clan.getName() + " приглашает вас провести войну [" + type.name() + "]! Запрос активен " + ChatColor.RED + "60 " + ChatColor.WHITE + "секунд.");
-        new SmartMessagesUtil("Введите " + ChatColor.RED + "/clan war accept " + clan.getName() + ChatColor.WHITE + " или " + ChatColor.RED + "нажмите сюда " + ChatColor.WHITE + "для принятия.")
+        new SmartMessagesUtil("Введите " + ChatColor.RED + "/cw accept " + clan.getName() + ChatColor.WHITE + " или " + ChatColor.RED + "нажмите сюда " + ChatColor.WHITE + "для принятия.")
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Начать войну").create()))
-                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/clan war accept " + clan.getName()))
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cw accept " + clan.getName()))
                 .send(enemyLeader);
         RedAge.say(p, "Вы отправили запрос на войну.");
     }

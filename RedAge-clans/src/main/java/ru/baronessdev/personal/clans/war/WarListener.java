@@ -13,6 +13,7 @@ import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class WarListener implements Listener {
 
@@ -55,6 +56,7 @@ public class WarListener implements Listener {
             if (!p.getLocation().getWorld().getName().equals("warWorld")) return;
             Clan c = Data.getInstance().getClan(p);
             Arrays.stream(p.getInventory().getContents())
+                    .filter(Objects::nonNull)
                     .forEach(i -> p.getLocation().getWorld().dropItem(p.getLocation(), i));
             p.getInventory().clear();
             e.setQuitMessage(p.getName() + " вышел во время боя. " + ChatColor.RED + "[" + ((c != null) ? c.getName() : "неизвестный клан") + "]");

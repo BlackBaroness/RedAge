@@ -8,8 +8,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import ru.baronessdev.personal.clans.ClansPlugin;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
-import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,13 +132,13 @@ public class WarManager {
         int firstCount = (int) w.getFirstClanPlayers().stream()
                 .filter(OfflinePlayer::isOnline)
                 .filter(p -> !p.isDead())
-                .filter(p -> p.getLocation().getWorld().getName().equals("warWorld "))
+                .filter(p -> p.getLocation().getWorld().getName().equals("warWorld"))
                 .count();
 
         int secondCount = (int) w.getSecondClanPlayers().stream()
                 .filter(OfflinePlayer::isOnline)
                 .filter(p -> !p.isDead())
-                .filter(p -> p.getLocation().getWorld().getName().equals("warWorld "))
+                .filter(p -> p.getLocation().getWorld().getName().equals("warWorld"))
                 .count();
         RedAge.log(firstCount + "/" + secondCount);
 
@@ -180,7 +180,7 @@ public class WarManager {
             w = null;
 
             RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─━╯");
-            Bukkit.getWorld("warWorld ").getEntities().stream()
+            Bukkit.createWorld(new WorldCreator("warWorld")).getEntities().stream()
                     .filter(e -> e instanceof Player)
                     .forEach(e -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getName()));
             return;
@@ -213,7 +213,7 @@ public class WarManager {
         w = null;
 
         RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─╯");
-        Bukkit.getWorld("warWorld ").getEntities().stream()
+        Bukkit.getWorld("warWorld").getEntities().stream()
                 .filter(e -> e instanceof Player)
                 .forEach(e -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getName()));
     }

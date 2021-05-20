@@ -46,8 +46,19 @@ public final class ClansPlugin extends JavaPlugin {
             return (clan == null) ? new ArrayList<>() : clan.getMembers();
         });
         commandManager.getCommandCompletions().registerCompletion("clans", c -> {
+            String myClan;
+            try {
+                myClan = Data.getInstance().getClan(c.getPlayer()).getName();
+            } catch (NullPointerException e) {
+                myClan = "";
+            }
+
             List<String> l = new ArrayList<>();
-            Data.getInstance().getClans().forEach(clan -> l.add(clan.getName()));
+            String finalMyClan = myClan;
+
+            Data.getInstance().getClans()
+                    .stream().filter(clan -> !clan.getName().equals(finalMyClan))
+                    .forEach(clan -> l.add(clan.getName()));
             return l;
         });
 

@@ -48,23 +48,25 @@ public class SQLite {
     }
 
     public void execute(boolean async, String... queries) {
-        for (String query : queries) {
-            query = setPlaceholder(query);
-            System.out.println(ChatColor.AQUA + query);
-            String finalQuery = query;
-            Task task = () -> {
-                checkConnection();
-                try {
-                    connection.createStatement().execute(finalQuery);
-                } catch (SQLException e) {
-                    RedAge.log(finalQuery);
-                    e.printStackTrace();
-                }
-            };
+        synchronized (SQLite.class) {
+            for (String query : queries) {
+                query = setPlaceholder(query);
+                System.out.println(ChatColor.AQUA + query);
+                String finalQuery = query;
+                Task task = () -> {
+                    checkConnection();
+                    try {
+                        connection.createStatement().execute(finalQuery);
+                    } catch (SQLException e) {
+                        RedAge.log(finalQuery);
+                        e.printStackTrace();
+                    }
+                };
 
-            if (async) {
-                ThreadUtil.execute(task);
-            } else task.execute();
+                if (async) {
+                    ThreadUtil.execute(task);
+                } else task.execute();
+            }
         }
     }
 

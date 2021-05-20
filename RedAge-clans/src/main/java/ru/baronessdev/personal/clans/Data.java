@@ -193,7 +193,7 @@ public class Data {
 
     @SneakyThrows
     public void addKillCount(Player p) {
-        ResultSet rs = topKillsDatabase.executeQuery("SELECT * FROM !table! WHERE name=" + p.getName());
+        ResultSet rs = topKillsDatabase.executeQuery("SELECT * FROM !table! WHERE name='" + p.getName() + "'");
         int last = 0;
         if (rs.next()) {
             last = rs.getInt("count");
