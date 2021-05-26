@@ -1,3 +1,5 @@
 name: RedAge_Spawn
 version: ${project.version}
 main: ru.baronessdev.personal.redage.spawn.Spawn
+loadbefore:
+  - EasySetSpawn

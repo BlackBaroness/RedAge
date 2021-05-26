@@ -91,7 +91,7 @@ public final class Jobs extends JavaPlugin implements Listener {
     }
 
     @SuppressWarnings("deprecation")
-    @EventHandler()
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         if (!p.getLocation().getWorld().getName().equals("spawn")) return;
@@ -101,22 +101,26 @@ public final class Jobs extends JavaPlugin implements Listener {
         boolean reverse = false;
         String type = "";
         double income = 0.0;
+        int time = 0;
 
         if (isMinerChunk(loc) && block.getType().toString().toLowerCase().contains("ore")) {
             reverse = true;
             type = "miner";
-            income = ThreadLocalRandom.current().nextDouble(0.1, 0.3);
+            income = ThreadLocalRandom.current().nextDouble(0.03, 0.05);
+            time = 90;
         }
 
         if (isWoodChunk(loc) && block.getType() == Material.LOG) {
             reverse = true;
             type = "wood";
-            income = 0.2;
+            income = 0.04;
+            time = 60;
         }
 
         if (reverse) {
+            e.setCancelled(true);
             BrokenBlock brokenBlock = new BrokenBlock(block, block.getType(), block.getData(), block.getTypeId(), block.getBiome());
-            Bukkit.getScheduler().runTaskLater(this, brokenBlock::restore, 20 * 10);
+            Bukkit.getScheduler().runTaskLater(this, brokenBlock::restore, 20 * time);
             block.setType(Material.AIR);
 
             reverseBlocks.add(brokenBlock);
