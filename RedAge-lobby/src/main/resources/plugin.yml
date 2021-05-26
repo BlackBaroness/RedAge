@@ -1,0 +1,3 @@
+name: RedAge_Lobby
+version: ${project.version}
+main: ru.baronessdev.personal.redage.lobby.Lobby

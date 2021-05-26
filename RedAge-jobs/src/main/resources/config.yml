@@ -1,12 +1,25 @@
+# ШАХТЁР
+minerLoc: 'spawn # -68 # 54 # -1'
+
 minerChunks:
-  - jj
-
-woodcutterChunks:
-  - ii
-
-woodcutterPoints:
-  Black_Baroness: 1
+  - 'CraftChunk{x=-6z=-1}'
+  - 'CraftChunk{x=-5z=-1}'
+  - 'CraftChunk{x=-6z=-2}'
+  - 'CraftChunk{x=-5z=-2}'
+  - 'CraftChunk{x=-4z=-2}'
+  - 'CraftChunk{x=-4z=-1}'
+  - 'CraftChunk{x=-5z=-3}'
 
 minerPoints:
   Black_Baroness: 1
 
+
+# ЛЕСОРУБ
+woodLoc: 'spawn # -48 # 52 # 43'
+
+woodChunks:
+  - 'CraftChunk{x=-3z=3}'
+  - 'CraftChunk{x=-4z=3}'
+
+woodPoints:
+  Black_Baroness: 1

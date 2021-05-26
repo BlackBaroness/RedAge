@@ -8,6 +8,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +22,7 @@ public final class RedAge extends JavaPlugin implements Listener {
     private static final HashMap<String, String> descriptions = new HashMap<>();
     private static final List<Player> loggers = new ArrayList<>();
     private static Economy economy;
+    public static Connection sqlite;
 
     protected static JavaPlugin instance;
 
@@ -26,6 +31,16 @@ public final class RedAge extends JavaPlugin implements Listener {
         saveDefaultConfig();
         instance = this;
         economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+
+        Connection tempConnection;
+        try {
+            tempConnection = DriverManager.getConnection("jdbc:sqlite://" + RedAge.getInstance().getDataFolder().getAbsolutePath() + File.separator + "sqlite.db");
+        } catch (SQLException e) {
+            tempConnection = null;
+            RedAge.log("CRITICAL: Cannot connect to SQLite database");
+            e.printStackTrace();
+        }
+        sqlite = tempConnection;
 
         getCommand("redage").setExecutor((sender, command, label, args) -> {
             if (args.length == 0) {

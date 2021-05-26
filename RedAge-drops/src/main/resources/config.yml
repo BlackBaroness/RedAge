@@ -1,9 +1,0 @@
-id:
-  ==: org.bukkit.inventory.ItemStack
-  type: WATCH
-  meta:
-    ==: ItemMeta
-    meta-type: UNSPECIFIC
-    display-name: §c§lТестовый лут
-    lore:
-      - §fТестовый лут

@@ -149,6 +149,11 @@ public class ClanWarCommand extends BaseCommand {
             return;
         }
 
+        if (war.getFirstClanPlayers().contains(p) || war.getSecondClanPlayers().contains(p)) {
+            RedAge.say(p, "Вы уже присоединились.");
+            return;
+        }
+
         int add = war.add(clan.getUuid(), p);
         if (add != -1) {
             RedAge.say(p, "Вы присоединились боевой отряд своего клана.");

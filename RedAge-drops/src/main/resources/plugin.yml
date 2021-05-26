@@ -1,3 +1,8 @@
 name: Redage_Drops
 version: ${project.version}
-main: ru.baronessdev.personal.redage.drops.redagedrops.Drops
+main: ru.baronessdev.personal.redage.drops.Drops
+depend:
+  - RedAge
+commands:
+  drop:
+    usage: /drop
