@@ -11,8 +11,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -86,9 +86,25 @@ public final class Drops extends JavaPlugin implements Listener {
 
     private void start() {
         World world = Bukkit.getWorld("world");
-        Location loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(20000), ThreadLocalRandom.current().nextInt(20000)).getLocation();
+        Location loc = null;
 
-        loc.setY(loc.getY() + 1);
+        boolean normal = false;
+        while (!normal) {
+            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(20000), ThreadLocalRandom.current().nextInt(20000)).getLocation();
+            Block block;
+
+            boolean checked = false;
+            int i = 1;
+            while (!checked) {
+                block = world.getBlockAt(loc.getBlockX(), loc.getBlockY() - i, loc.getBlockZ());
+                if (block.getType() != Material.AIR) {
+                    checked = true;
+                    if (block.getType() != Material.STATIONARY_WATER && block.getType() != Material.WATER && block.getType() != Material.LAVA)
+                        normal = true;
+                } else i++;
+            }
+        }
+
         chest = world.getBlockAt(loc);
         chest.setType(Material.CHEST);
         Chest asStorage = (Chest) chest.getState();
@@ -149,7 +165,8 @@ public final class Drops extends JavaPlugin implements Listener {
                     });
 
                     chest = null;
-                    cooldown.clear();
+                    Bukkit.getScheduler().runTaskLater(RedAge.getInstance(), cooldown::clear, 20 * 30);
+
                     cancel();
                     return;
                 }
@@ -177,12 +194,12 @@ public final class Drops extends JavaPlugin implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerTeleport(PlayerTeleportEvent e) {
-        if (cooldown.contains(e.getPlayer())) {
-            e.getPlayer().sendMessage(ChatColor.RED + "Вы не можете телепортироваться до разблокировки дропа.");
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
+        if (cooldown.contains(e.getPlayer()) && !e.getMessage().contains("redage drops")) {
+            e.getPlayer().sendMessage(ChatColor.RED + "Вы не можете использовать команды до разблокировки дропа");
+            e.getPlayer().sendMessage(ChatColor.RED + "                     и в течении 30с после разблокировки.");
+
             e.setCancelled(true);
         }
     }
-
-
 }

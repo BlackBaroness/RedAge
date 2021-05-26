@@ -58,7 +58,6 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
                         normal = true;
                 } else i++;
             }
-
         }
 
         p.sendMessage("§f[§cRed§fAge] §7Телепортируем вас...");
