@@ -1,0 +1,6 @@
+name: RedAge_RTP
+version: ${project.version}
+main: ru.baronessdev.personal.redage.rtp.RTP
+commands:
+  rtp:
+    usage: /rtp
