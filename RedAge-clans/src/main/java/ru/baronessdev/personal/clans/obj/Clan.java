@@ -61,6 +61,7 @@ public class Clan {
                         .ifPresent(player -> RedAge.say(player, s))));
     }
 
+
     public void setIcon(ItemStack icon) {
         this.icon = icon;
         ThreadUtil.execute(() -> {

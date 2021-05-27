@@ -5,16 +5,19 @@ import com.google.common.collect.ImmutableList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.clans.commands.ClanCommand;
 import ru.baronessdev.personal.clans.commands.ClanWarCommand;
 import ru.baronessdev.personal.clans.gui.GuiHandler;
 import ru.baronessdev.personal.clans.obj.Clan;
+import ru.baronessdev.personal.clans.util.ClanChatUtil;
 import ru.baronessdev.personal.clans.war.WarListener;
 import ru.baronessdev.personal.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -108,6 +111,17 @@ public final class ClansPlugin extends JavaPlugin {
 
         // регистрация papi плейсхолдеров
         new PlaceholderAPIHook().register();
+
+        // регистрация /cc
+        getCommand("cc").setExecutor(((sender, command, label, args) -> {
+            if (!(sender instanceof Player)) return true;
+            if (args.length == 0) return false;
+
+            StringBuilder b = new StringBuilder();
+            Arrays.stream(args).forEach(s -> b.append(s).append(" "));
+            ClanChatUtil.process((Player) sender, b.toString());
+            return true;
+        }));
     }
 
     public static boolean clanNotExists(Clan c, CommandSender s) {

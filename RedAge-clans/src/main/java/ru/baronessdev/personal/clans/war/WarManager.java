@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import ru.baronessdev.personal.clans.ClansPlugin;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
+import ru.baronessdev.personal.clans.util.SpawnTeleportUtil;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
@@ -20,16 +21,16 @@ public class WarManager {
 
     protected static War w;
     public static HashMap<UUID, Integer> warCount = new HashMap<>();
-    private static final List<Block> glass = new ArrayList<>();
+    static final List<Block> glass = new ArrayList<>();
 
     public static void scheduleWar(Clan first, Clan second, WarType type) {
-        RedAge.broadcast("Кланы " + ChatColor.RED + first.getName() + ChatColor.WHITE + " и " + ChatColor.RED + second.getName() + ChatColor.WHITE + " готовятся к войне! Арена будет открыта через " + ChatColor.RED + "10" + ChatColor.WHITE + " минут.");
+        RedAge.broadcast("Кланы " + ChatColor.RED + first.getName() + ChatColor.WHITE + " и " + ChatColor.RED + second.getName() + ChatColor.WHITE + " готовятся к войне! До начала: " + ChatColor.RED + "5" + ChatColor.WHITE + " минут.");
 
         warCount.put(first.getUuid(), warCount.getOrDefault(first.getUuid(), 0) + 1);
         warCount.put(second.getUuid(), warCount.getOrDefault(first.getUuid(), 0) + 1);
 
         w = new War(UUID.randomUUID(), type, first.getUuid(), second.getUuid(), new ArrayList<>(), new ArrayList<>());
-        ThreadUtil.runLater(30/*600*/, () -> {
+        ThreadUtil.runLater(300, () -> {
             // начало войны
             RedAge.broadcast("Война между кланами " + ChatColor.RED + first.getName() + ChatColor.WHITE + " и " + ChatColor.RED + second.getName() + ChatColor.WHITE + " вот-вот начнётся!");
 
@@ -60,7 +61,7 @@ public class WarManager {
                 RedAge.broadcast(ChatColor.RED + "╭━─━─━─━─━─━─≪ " + ChatColor.WHITE + "Итоги войны" + ChatColor.RED + " ≫─━─━─━─━─━─━╮");
                 RedAge.broadcast("Война между кланами " + ChatColor.RED + firstClan.getName() + ChatColor.WHITE + " и " + ChatColor.RED + secondClan.getName() + ChatColor.WHITE + " завершилась победой " + winner.getName());
                 RedAge.broadcast("Клан " + looser.getName() + " не явился на бой!");
-                RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─━╯");
+                RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "━─━─━─━─━╯");
 
                 winner.setRating(winner.getRating() + 1);
                 w = null;
@@ -102,6 +103,7 @@ public class WarManager {
                 public void run() {
                     if (i == 0) {
                         cancel();
+                        allPlayers.forEach(p -> ActionBarAPI.sendActionBar(p, ""));
                         return;
                     }
                     allPlayers.forEach(p -> ActionBarAPI.sendActionBar(p, ChatColor.AQUA + String.valueOf(i)));
@@ -122,7 +124,7 @@ public class WarManager {
                     finishWar(true);
                 }
             });
-            w.getTimer().runTaskLater(ClansPlugin.plugin, 20 * 60/*20 * 60 * 10*/);
+            w.getTimer().runTaskLater(ClansPlugin.plugin, 20 * 60 * 10);
         });
     }
 
@@ -179,10 +181,13 @@ public class WarManager {
             secondClan.setRating(secondClan.getRating() + 1);
             w = null;
 
-            RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─━╯");
-            Bukkit.createWorld(new WorldCreator("warWorld")).getEntities().stream()
+            RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━╯");
+            Bukkit.getWorld("warWorld").getEntities().stream()
                     .filter(e -> e instanceof Player)
-                    .forEach(e -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getName()));
+                    .forEach(e -> {
+                        e.sendMessage("Вы будете телепортированы на спавн через 15 секунд.");
+                        Bukkit.getScheduler().runTaskLater(RedAge.getInstance(), () -> SpawnTeleportUtil.tp((Player) e), 15 * 20);
+                    });
             return;
         }
 
@@ -215,7 +220,10 @@ public class WarManager {
         RedAge.broadcast(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─╯");
         Bukkit.getWorld("warWorld").getEntities().stream()
                 .filter(e -> e instanceof Player)
-                .forEach(e -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + e.getName()));
+                .forEach(e -> {
+                    e.sendMessage("Вы будете телепортированы на спавн через 15 секунд.");
+                    Bukkit.getScheduler().runTaskLater(RedAge.getInstance(), () -> SpawnTeleportUtil.tp((Player) e), 15 * 20);
+                });
     }
 
     public static War getWar(Clan c) {
@@ -239,29 +247,87 @@ public class WarManager {
         for (int i = 1; i < 10; i++) {
             Location l = RedAge.formatLocation(ClansPlugin.plugin.getConfig().getString("settings.1." + i));
 
+            // y
             glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() - 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 2, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 2, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 2, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 2, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 2, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 2, l.getBlockZ() - 1));
+
+            // x
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY() + 1, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY() + 1, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY(), l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY(), l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY() + 1, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY() + 1, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY(), l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY(), l.getBlockZ() - 1));
+
+            // z
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ() + 2));
         }
 
         for (int i = 1; i < 10; i++) {
             Location l = RedAge.formatLocation(ClansPlugin.plugin.getConfig().getString("settings.2." + i));
 
+            // y
             glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() - 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ()));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 2, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 2, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 2, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 2, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 2, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 2, l.getBlockZ() - 1));
+
+            // x
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY() + 1, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY() + 1, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY(), l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY(), l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY() + 1, l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 2, l.getBlockY() + 1, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY(), l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 2, l.getBlockY(), l.getBlockZ() - 1));
+
+            // z
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ() - 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ() + 2));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ() + 2));
         }
     }
 

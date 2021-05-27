@@ -30,7 +30,11 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
         if (params.equals("clan")) {
             Clan c = Data.getInstance().getClan(p);
-            return (c == null) ? "" : c.getName() + " ";
+
+            return " " +
+                    ((c == null)
+                            ? ""
+                            : "[" + c.getName() + "] ");
         }
 
         return "";

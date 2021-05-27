@@ -1,16 +1,20 @@
 package ru.baronessdev.personal.clans.war;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import ru.baronessdev.personal.clans.Data;
 import ru.baronessdev.personal.clans.obj.Clan;
+import ru.baronessdev.personal.clans.util.ClanChatUtil;
+import ru.baronessdev.personal.clans.util.SpawnTeleportUtil;
+import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -34,7 +38,7 @@ public class WarListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         if (p.getLocation().getWorld().getName().equals("warWorld")) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawn " + p.getName());
+            SpawnTeleportUtil.tp(p);
         }
     }
 
@@ -71,4 +75,25 @@ public class WarListener implements Listener {
         } catch (Exception ignored) {
         }
     }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
+        Player p = e.getPlayer();
+        if (p.getLocation().getWorld().getName().equals("warWorld")) {
+            RedAge.say(p, "На войне нет места командам!");
+            e.setCancelled(true);
+            if (p.hasPermission("admin")) {
+                RedAge.say(p, "Но админам можно.");
+                e.setCancelled(false);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
+        if (!e.getMessage().startsWith("..")) return;
+        ClanChatUtil.process(e.getPlayer(), e.getMessage().substring(2));
+        e.setCancelled(true);
+    }
 }
+

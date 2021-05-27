@@ -156,7 +156,7 @@ public class ClanWarCommand extends BaseCommand {
 
         int add = war.add(clan.getUuid(), p);
         if (add != -1) {
-            RedAge.say(p, "Вы присоединились боевой отряд своего клана.");
+            RedAge.say(p, "Вы присоединились в боевой отряд своего клана.");
             clan.broadcast(ChatColor.RED + p.getName() + ChatColor.RESET + " присоединился к войне [" + add + "/" + war.getType().getPlayers() + "]");
         } else {
             RedAge.say(p, "Отряд для войны переполнен!");

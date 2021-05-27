@@ -7,3 +7,5 @@ depend:
 commands:
   clan:
     aliases: c
+  cc:
+    usage: /cc [сообщение]

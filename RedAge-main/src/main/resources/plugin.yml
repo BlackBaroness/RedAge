@@ -6,3 +6,4 @@ depend:
 commands:
   redage:
     usage: /redage
+    permission: admin
