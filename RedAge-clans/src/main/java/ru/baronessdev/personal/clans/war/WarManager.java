@@ -238,18 +238,30 @@ public class WarManager {
     public static void setup() {
         for (int i = 1; i < 10; i++) {
             Location l = RedAge.formatLocation(ClansPlugin.plugin.getConfig().getString("settings.1." + i));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ() - 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ() - 1));
+
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() - 1));
         }
 
         for (int i = 1; i < 10; i++) {
             Location l = RedAge.formatLocation(ClansPlugin.plugin.getConfig().getString("settings.2." + i));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ() - 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ() + 1));
-            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ() - 1));
+
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 2, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY(), l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY(), l.getBlockZ() - 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() + 1, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX() - 1, l.getBlockY() + 1, l.getBlockZ()));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() + 1));
+            glass.add(l.getWorld().getBlockAt(l.getBlockX(), l.getBlockY() + 1, l.getBlockZ() - 1));
         }
     }
 

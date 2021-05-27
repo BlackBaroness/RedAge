@@ -45,7 +45,7 @@ public class Clan {
         this.icon = icon;
         if (icon == null) this.icon = new ItemStack(Material.COBBLESTONE);
         this.name = name;
-        this.owner = owner.toLowerCase();
+        this.owner = owner;
         this.rating = rating;
         this.hasBattlePass = hasBattlePass;
         this.battlePassPoints = battlePassPoints;

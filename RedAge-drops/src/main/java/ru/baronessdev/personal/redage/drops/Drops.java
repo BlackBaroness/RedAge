@@ -11,6 +11,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -30,13 +31,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Drops extends JavaPlugin implements Listener {
 
     private Block chest;
+    private final List<ItemStack> items = new ArrayList<>();
     private long timer;
     private BossBar bossBar;
     private final List<Player> cooldown = new ArrayList<>();
 
     @Override
     public void onEnable() {
-        saveResource("items.yml", false);
+        saveResource("items.yml", true);
         Bukkit.getPluginManager().registerEvents(this, this);
 
         getCommand("drop").setExecutor(((sender, command, label, args) -> {
@@ -76,6 +78,12 @@ public final class Drops extends JavaPlugin implements Listener {
                     return true;
                 }
 
+                case "cd": {
+                    cooldown.clear();
+                    return true;
+                }
+
+
                 default: {
                     adminHelp(sender);
                     return true;
@@ -87,6 +95,7 @@ public final class Drops extends JavaPlugin implements Listener {
     private void start() {
         World world = Bukkit.getWorld("world");
         Location loc = null;
+        items.clear();
 
         boolean normal = false;
         while (!normal) {
@@ -107,7 +116,6 @@ public final class Drops extends JavaPlugin implements Listener {
 
         chest = world.getBlockAt(loc);
         chest.setType(Material.CHEST);
-        Chest asStorage = (Chest) chest.getState();
 
         // чтение
         List<String> keys = new ArrayList<>();
@@ -141,7 +149,7 @@ public final class Drops extends JavaPlugin implements Listener {
                 item.addUnsafeEnchantment(Enchantment.getByName(enchantment), level);
             }
 
-            asStorage.getInventory().addItem(item);
+            items.add(item);
         }
 
         bossBar = Bukkit.getServer().createBossBar("Загрузка...", BarColor.RED, BarStyle.SOLID);
@@ -154,6 +162,8 @@ public final class Drops extends JavaPlugin implements Listener {
             public void run() {
                 timer--;
                 if (timer <= 0) {
+
+                    items.forEach(i -> ((Chest) chest.getState()).getInventory().addItem(i));
 
                     bossBar.setProgress(1.0);
                     bossBar.setColor(BarColor.GREEN);
@@ -183,6 +193,8 @@ public final class Drops extends JavaPlugin implements Listener {
     private void adminHelp(CommandSender s) {
         s.sendMessage("§a/redage drops start§f - досрочно создаёт дроп, если ещё не создан");
         s.sendMessage("§a/redage drops reset§f - досрочно снимает лок с дропа, если создан");
+        s.sendMessage("§a/redage drops cd§f - обнуляет кулдауны");
+
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -195,10 +207,17 @@ public final class Drops extends JavaPlugin implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
-        if (cooldown.contains(e.getPlayer()) && !e.getMessage().contains("redage drops")) {
+        if (cooldown.contains(e.getPlayer())) {
             e.getPlayer().sendMessage(ChatColor.RED + "Вы не можете использовать команды до разблокировки дропа");
             e.getPlayer().sendMessage(ChatColor.RED + "                     и в течении 30с после разблокировки.");
 
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityExplode(EntityExplodeEvent e) {
+        if (chest != null && e.blockList().contains(chest)) {
             e.setCancelled(true);
         }
     }

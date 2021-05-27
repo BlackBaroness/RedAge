@@ -3,6 +3,7 @@ version: ${project.version}
 main: ru.baronessdev.personal.clans.ClansPlugin
 depend:
   - RedAge
+  - PlaceholderAPI
 commands:
   clan:
     aliases: c

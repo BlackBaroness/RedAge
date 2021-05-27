@@ -79,7 +79,7 @@ public class ClanCommand extends BaseCommand {
         }
 
         List<String> members = new ArrayList<>();
-        members.add(p.getName().toLowerCase());
+        members.add(p.getName());
         Data.getInstance().createClan(new Clan(UUID.randomUUID(),
                 new ItemStack(Material.STONE),
                 args[0],
@@ -144,7 +144,7 @@ public class ClanCommand extends BaseCommand {
                     Clan actual = Data.getInstance().getClan(clan.getUuid());
                     if (actual == null) return;
 
-                    actual.getMembers().add(invited.getName().toLowerCase());
+                    actual.getMembers().add(invited.getName());
                     actual.syncMembers();
 
                     RedAge.say(invited, "Вы вступили в клан " + ChatColor.RED + actual.getName() + ChatColor.WHITE + ".");
@@ -185,7 +185,7 @@ public class ClanCommand extends BaseCommand {
             return;
         }
 
-        String nick = args[0].toLowerCase();
+        String nick = args[0];
         if (!clan.getMembers().contains(nick)) {
             RedAge.say(p, ChatColor.RED + "Игрок не находится в клане.");
             return;
@@ -266,12 +266,12 @@ public class ClanCommand extends BaseCommand {
             return;
         }
 
-        if (clan.getOwner().equals(p.getName().toLowerCase())) {
+        if (clan.getOwner().equals(p.getName())) {
             RedAge.say(p, ChatColor.RED + "Владелец клана не может покинуть клан!");
             return;
         }
 
-        clan.getMembers().remove(p.getName().toLowerCase());
+        clan.getMembers().remove(p.getName());
         clan.syncMembers();
         clan.broadcast(ChatColor.RED + p.getName() + ChatColor.WHITE + " покинул клан.");
         RedAge.say(p, "Вы покинули клан.");

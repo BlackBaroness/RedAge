@@ -118,7 +118,7 @@ public class Data {
     }
 
     public Clan getClan(Player p) {
-        String lowerCase = p.getName().toLowerCase();
+        String lowerCase = p.getName();
         for (Clan clan : clans) {
             if (clan.getMembers().contains(lowerCase)) return clan;
         }
@@ -176,7 +176,7 @@ public class Data {
         clans.add(clan);
         clansDatabase.execute(false, "INSERT INTO !table! " +
                 "(`prefix`, `name`, `uuid`, `owner`, `creation_date`, `rating`, `has_battle_pass`, `battle_pass_points`)  VALUES " + String.format("('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
-                clan.getPrefix(), clan.getName(), clan.getUuid().toString(), clan.getOwner().toLowerCase(), clan.getCreationTime(), clan.getRating(), BooleanUtil.toInt(clan.isHasBattlePass()), clan.getBattlePassPoints()));
+                clan.getPrefix(), clan.getName(), clan.getUuid().toString(), clan.getOwner(), clan.getCreationTime(), clan.getRating(), BooleanUtil.toInt(clan.isHasBattlePass()), clan.getBattlePassPoints()));
 
         clan.syncMembers();
     }

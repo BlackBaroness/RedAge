@@ -105,6 +105,9 @@ public final class ClansPlugin extends JavaPlugin {
         }));
 
         WarManager.setup();
+
+        // регистрация papi плейсхолдеров
+        new PlaceholderAPIHook().register();
     }
 
     public static boolean clanNotExists(Clan c, CommandSender s) {
