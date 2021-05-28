@@ -56,7 +56,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${basedir}/target/${project.build.finalName}.jar" tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
+                                <move file="${basedir}/target/${project.build.finalName}.jar"
+                                      tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
                                 <delete dir="${basedir}/target"/>
                             </target>
                         </configuration>
@@ -107,7 +108,10 @@
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
-            <scope>compile</scope>
+            <scope>system</scope>
+            <systemPath>
+                ${basedir}/../lib/Vault.jar
+            </systemPath>
         </dependency>
     </dependencies>
 </project>

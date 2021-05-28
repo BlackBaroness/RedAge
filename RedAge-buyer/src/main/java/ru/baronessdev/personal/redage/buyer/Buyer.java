@@ -94,7 +94,7 @@ public final class Buyer extends JavaPlugin implements Listener {
 
             RedAge.log(i + " Создаю новый товар: " + material);
             inv.setItem(i, new ItemBuilder(material).setLore(
-                    ChatColor.WHITE + "\"Куплю за " + ChatColor.RED + price + ChatColor.WHITE + " монет.\"",
+                    ChatColor.WHITE + "\"Куплю за " + ChatColor.RED + price + ChatColor.WHITE + "$.\"",
                     "",
                     ChatColor.GOLD + "§cНажмите §fЛКМ§c, чтобы продать §f1§c предмет",
                     " §cили §fПКМ§c, чтобы продать §fвсе§c предметы."
@@ -137,7 +137,7 @@ public final class Buyer extends JavaPlugin implements Listener {
         RedAge.getEconomy().depositPlayer(p, money);
         if (right) p.closeInventory();
 
-        RedAge.say(p, "Вы получили " + ChatColor.RED + money + "$" + ChatColor.WHITE + ".");
+        p.sendMessage(ChatColor.GREEN + "Вы заработали " + ChatColor.BOLD + money + ChatColor.GREEN + "$.");
     }
 
     private void removeItems(Player player, Material material, int amount) {

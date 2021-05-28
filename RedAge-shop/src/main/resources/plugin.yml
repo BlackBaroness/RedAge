@@ -1,5 +1,5 @@
 name: RedAge_Shop
 version: ${project.version}
-main: ru.baronessdev.personal.redage.shop.Core
+main: ru.baronessdev.personal.redage.shop.Shops
 depend:
   - RedAge

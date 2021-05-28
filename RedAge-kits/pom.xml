@@ -56,7 +56,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${basedir}/target/${project.build.finalName}.jar" tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
+                                <move file="${basedir}/target/${project.build.finalName}.jar"
+                                      tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
                                 <delete dir="${basedir}/target"/>
                             </target>
                         </configuration>

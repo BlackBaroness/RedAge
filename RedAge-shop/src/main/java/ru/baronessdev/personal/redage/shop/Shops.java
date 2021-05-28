@@ -1,6 +1,5 @@
 package ru.baronessdev.personal.redage.shop;
 
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,23 +9,21 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.money.Money;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Core extends JavaPlugin implements Listener {
+public final class Shops extends JavaPlugin implements Listener {
 
     private final List<Shop> shops = new ArrayList<>();
-    private Economy economy;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         load();
-        setupEconomy();
 
         RedAge.registerAdminCommand("shop", "- перезагружает все магазины", ((sender, args) -> {
             load();
@@ -35,13 +32,6 @@ public final class Core extends JavaPlugin implements Listener {
         }));
 
         Bukkit.getPluginManager().registerEvents(this, this);
-    }
-
-    private void setupEconomy() {
-        RegisteredServiceProvider<Economy> economyProvider = this.getServer().getServicesManager().getRegistration(Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
     }
 
     public void load() {
@@ -95,13 +85,14 @@ public final class Core extends JavaPlugin implements Listener {
         p.closeInventory();
 
         int price = product.getPrice();
-        if (economy.getBalance(p) < price) {
+        int balance = Money.getBalance(p);
+        if (balance < price) {
             p.sendMessage(ChatColor.RED + "Недостаточно средств для покупки!");
             return;
         }
 
-        economy.withdrawPlayer(p, price);
+        Money.setBalance(p, balance - price);
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), product.getCommand().replace("<p>", p.getName()));
-        p.sendMessage(ChatColor.GREEN + "Вы успешно приобрели товар\\услугу.");
+        p.sendMessage(ChatColor.GREEN + "Вы успешно приобрели товар за " + price + " redcoin.");
     }
 }
