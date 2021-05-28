@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.baronessdev.personal.redage</groupId>
-    <artifactId>redage-jobs</artifactId>
+    <groupId>ru.baronessdev.personal.redage.combat</groupId>
+    <artifactId>redage-combat</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Jobs</name>
+    <name>RedAge_Combat</name>
 
     <properties>
         <desktop>Рабочий стол</desktop>
@@ -75,10 +75,6 @@
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -96,30 +92,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>system</scope>
-            <systemPath>
-                ${basedir}/../lib/Vault.jar
-            </systemPath>
-        </dependency>
-        <dependency>
             <groupId>ru.baronessdev.personal.redage</groupId>
             <artifactId>redage-main</artifactId>
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>
                 ${basedir}/../lib/RedAge-main.jar
-            </systemPath>
-        </dependency>
-        <dependency>
-            <groupId>unknown</groupId>
-            <artifactId>actionbarapi</artifactId>
-            <version>LATEST</version>
-            <scope>system</scope>
-            <systemPath>
-                ${basedir}/../lib/ActionBarAPI.jar
             </systemPath>
         </dependency>
     </dependencies>
