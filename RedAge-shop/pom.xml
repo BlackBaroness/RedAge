@@ -107,13 +107,13 @@
             <groupId>ru.baronessdev.personal.redage</groupId>
             <artifactId>redage-main</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ru.baronessdev.personal.redage.money</groupId>
             <artifactId>redage-money</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

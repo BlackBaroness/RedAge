@@ -1,3 +1,5 @@
 name: RedAge_Money
 version: ${project.version}
 main: ru.baronessdev.personal.redage.money.Money
+depend:
+  - RedAge

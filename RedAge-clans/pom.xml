@@ -124,7 +124,7 @@
             <groupId>ru.baronessdev.personal.redage</groupId>
             <artifactId>redage-main</artifactId>
             <version>1.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.clip</groupId>
