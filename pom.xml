@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ru.baronessdev.personal.redage.all</groupId>
+    <artifactId>ALL</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <!--     библиотеки    !-->
+        <module>RedAge-main</module>
+        <module>RedAge-money</module>
+
+        <!--    независимые     !-->
+        <module>RedAge-buyer</module>
+        <module>RedAge-clans</module>
+        <module>RedAge-combat</module>
+        <module>RedAge-drops</module>
+        <module>RedAge-jobs</module>
+        <module>RedAge-kits</module>
+        <!-- <module>RedAge-lobby</module> !-->
+        <module>RedAge-RTP</module>
+        <!-- <module>RedAge-shop</module> !-->
+        <module>RedAge-spawn</module>
+    </modules>
+</project>

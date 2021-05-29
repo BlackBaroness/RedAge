@@ -57,10 +57,7 @@
                         <configuration>
                             <target>
                                 <copy file="${basedir}/target/${project.build.finalName}.jar"
-                                      tofile="${basedir}/../lib/RedAge-money.jar"/>
-                                <move file="${basedir}/target/${project.build.finalName}.jar"
                                       tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
-                                <delete dir="${basedir}/target"/>
                             </target>
                         </configuration>
                     </execution>
@@ -94,15 +91,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>ru.baronessdev.personal.redage</groupId>
-            <artifactId>redage-main</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>
-                ${basedir}/../lib/RedAge-main.jar
-            </systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>21.0.0</version>
@@ -121,6 +109,12 @@
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
             <version>0.5.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.baronessdev.personal.redage</groupId>
+            <artifactId>redage-main</artifactId>
+            <version>1.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

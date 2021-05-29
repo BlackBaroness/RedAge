@@ -56,9 +56,8 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${basedir}/target/${project.build.finalName}.jar"
+                                <copy file="${basedir}/target/${project.build.finalName}.jar"
                                       tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
-                                <delete dir="${basedir}/target"/>
                             </target>
                         </configuration>
                     </execution>
@@ -95,10 +94,7 @@
             <groupId>ru.baronessdev.personal.redage</groupId>
             <artifactId>redage-main</artifactId>
             <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>
-                ${basedir}/../lib/RedAge-main.jar
-            </systemPath>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

@@ -67,16 +67,7 @@
                         <configuration>
                             <target>
                                 <copy file="${basedir}/target/${project.build.finalName}.jar"
-                                      tofile="${basedir}/../lib/RedAge-main.jar"/>
-                                <move file="${basedir}/target/${project.build.finalName}.jar"
                                       tofile="${user.home}/${desktop}/RedAge/${project.name}.jar"/>
-                                <delete dir="${basedir}/target"/>
-                                <copy file="${basedir}/../lib/ActionBarAPI.jar"
-                                      tofile="${user.home}/${desktop}/RedAge/ActionBarAPI.jar"/>
-                                <copy file="${basedir}/../lib/Vault.jar"
-                                      tofile="${user.home}/${desktop}/RedAge/Vault.jar"/>
-                                <copy file="${basedir}/../lib/PhantomEconomy.jar"
-                                      tofile="${user.home}/${desktop}/RedAge/PhantomEconomy.jar"/>
                             </target>
                         </configuration>
                     </execution>
