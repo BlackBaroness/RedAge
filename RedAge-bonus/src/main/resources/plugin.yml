@@ -1,0 +1,7 @@
+name: RedAge_Bonus
+version: ${project.version}
+main: ru.baronessdev.personal.redage.bonus.Bonus
+depend: [ RedAge ]
+commands:
+  bonus:
+    usage: /bonus
