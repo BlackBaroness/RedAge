@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public final class Jobs extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        RedAge.registerAdminCommand("jobs", "- перезагружает точки работ", ((sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("jobs", "- перезагружает точки работ", ((sender, args) -> {
             reloadConfig();
             sender.sendMessage("дело сделано");
             return true;

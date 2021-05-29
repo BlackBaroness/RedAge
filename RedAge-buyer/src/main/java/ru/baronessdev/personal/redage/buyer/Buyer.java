@@ -12,7 +12,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,22 +36,34 @@ public final class Buyer extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         load();
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
             time = time + 1;
             if (time == hour3) {
                 time = 0;
-                update();
+                ThreadUtil.runBukkitTask(this::update);
             }
 
             int last = hour3 - time;
             int hours = last / 3600;
             int minutes = (last % 3600) / 60;
-            int seconds = last % 60;
-            String timeString = String.format("§fДо обновления: §c%02d:%02d:%02d", hours, minutes, seconds);
-            inv.setItem(40, new ItemBuilder(Material.COMPASS).setName("§cОбновление списка предложений").setLore(timeString).build());
-        }, 0, 20);
 
-        RedAge.registerAdminCommand("buyer", "- перезагружает скупщика", ((sender, args) -> {
+            String hoursString = (hours != 0)
+                    ? (hours == 1)
+                    ? "1 час "
+                    : hours + " часов "
+                    : "";
+
+            String minutesString = (minutes != 0)
+                    ? minutes + " мин."
+                    : "";
+
+            String extra = (hoursString.equals("") && minutesString.equals("")) ? "менее минуты" : "";
+            String timeString = "§fДо обновления: §c" + hoursString + minutesString + extra;
+            ThreadUtil.runBukkitTask(() ->
+                    inv.setItem(40, new ItemBuilder(Material.COMPASS).setName("§cОбновление списка предложений").setLore(timeString).build()));
+        }, 0, 60 * 20);
+
+        AdminACF.registerSimpleAdminCommand("buyer", "- перезагружает скупщика", ((sender, args) -> {
             update();
             return true;
         }));

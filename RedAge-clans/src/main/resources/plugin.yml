@@ -1,6 +1,6 @@
 name: RedAge_Clans
 version: ${project.version}
-main: ru.baronessdev.personal.clans.ClansPlugin
+main: ru.baronessdev.personal.redage.clans.ClansPlugin
 depend:
   - RedAge
   - PlaceholderAPI

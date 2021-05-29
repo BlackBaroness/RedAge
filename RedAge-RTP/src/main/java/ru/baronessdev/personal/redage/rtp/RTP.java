@@ -10,20 +10,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 public final class RTP extends JavaPlugin implements CommandExecutor {
 
-    private final HashMap<Player, Integer> coolDownMap = new HashMap<>();
+    private final HashMap<Player, Long> coolDownMap = new HashMap<>();
 
     @Override
     public void onEnable() {
         getCommand("rtp").setExecutor(this);
-        RedAge.registerAdminCommand("rtp", "- сбрасывает кулдауны rtp", ((sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("rtp", "- сбрасывает кулдауны rtp", ((sender, args) -> {
             coolDownMap.clear();
             sender.sendMessage("Кд сброшены");
             return true;
@@ -35,8 +36,10 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
         if (!(sender instanceof Player)) return true;
 
         Player p = (Player) sender;
-        if (coolDownMap.containsKey(p)) {
-            p.sendMessage("§f[§cRed§fAge] §7Вы сможете телепортироваться через §с" + coolDownMap.get(p) + " §7секунд.");
+        long need = needTime(p);
+        if (needTime(p) != 0) {
+            long last = TimeUnit.MILLISECONDS.toSeconds(need);
+            RedAge.say(p, String.format("§fВы сможете телепортироваться через: §c%d секунд", last));
             return true;
         }
 
@@ -60,28 +63,20 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
             }
         }
 
-        p.sendMessage("§f[§cRed§fAge] §7Телепортируем вас...");
+        RedAge.say(p, "Телепортируем вас...");
         p.teleport(loc);
 
-        coolDownMap.put(p, 600);
-        BukkitRunnable r = new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!coolDownMap.containsKey(p)) {
-                    cancel();
-                    return;
-                }
-
-                if (coolDownMap.get(p) <= 0) {
-                    coolDownMap.remove(p);
-                    cancel();
-                    return;
-                }
-
-                coolDownMap.put(p, coolDownMap.get(p) - 1);
-            }
-        };
-        r.runTaskTimer(this, 0, 20);
+        coolDownMap.put(p, System.currentTimeMillis());
         return true;
+    }
+
+    private long needTime(Player p) {
+        long x = coolDownMap.getOrDefault(p, 0L);
+        if (x == 0) return 0;
+
+        long y = 120000;
+        long z = System.currentTimeMillis();
+
+        return (z - y > x) ? 0 : ~(z - (x + y));
     }
 }

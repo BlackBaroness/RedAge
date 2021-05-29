@@ -1,7 +1,7 @@
 package ru.baronessdev.personal.redage.redagemain;
 
+import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,25 +13,47 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public final class RedAge extends JavaPlugin implements Listener {
 
-    private static final HashMap<String, AdminSubCommand> subCommands = new HashMap<>();
-    private static final HashMap<String, String> descriptions = new HashMap<>();
-    private static final List<Player> loggers = new ArrayList<>();
-    private static Economy economy;
-    public static Connection sqlite;
-
+    @Getter
     protected static JavaPlugin instance;
 
     @Override
     public void onEnable() {
+        setupBase();
+        setupEconomy();
+        setupSqlite();
+        setupACF();
+        setupCommands();
+    }
+
+    private void setupBase() {
         saveDefaultConfig();
         instance = this;
-        economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+    }
 
+
+
+
+    /* =================================        ЭКОНОМИКА       ================================= */
+
+    @Getter
+    private static Economy economy;
+
+    private void setupEconomy() {
+        economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+    }
+
+
+
+
+    /* =================================         SQLITE       ================================= */
+
+    public static Connection sqlite;
+
+    private void setupSqlite() {
         Connection tempConnection;
         try {
             tempConnection = DriverManager.getConnection("jdbc:sqlite://" + RedAge.getInstance().getDataFolder().getAbsolutePath() + File.separator + "sqlite.db");
@@ -41,37 +63,30 @@ public final class RedAge extends JavaPlugin implements Listener {
             e.printStackTrace();
         }
         sqlite = tempConnection;
+    }
 
-        getCommand("redage").setExecutor((sender, command, label, args) -> {
-            if (args.length == 0) {
-                help(sender);
-                return true;
-            }
 
-            AdminSubCommand sub = subCommands.get(args[0].toLowerCase());
 
-            String[] newArgs = (String[]) ArrayUtils.remove(args, 0);
-            if (sub == null) {
-                help(sender);
-                return true;
-            }
+    /* =================================           ACF       ================================= */
 
-            try {
-                if (!sub.onCommand(sender, newArgs))
-                    help(sender);
-            } catch (ClassCastException e) {
-                say(sender, "Данная команда доступна только для игроков.");
-            }
-            return true;
-        });
+    private void setupACF() {
+        AdminACF.setup(this);
+    }
 
-        registerAdminCommand("location", "- показывает текущую локацию", ((sender, args) -> {
+    private static final List<Player> loggers = new ArrayList<>();
+
+
+
+    /* =================================         КОМАНДЫ       ================================= */
+
+    private void setupCommands() {
+        AdminACF.registerSimpleAdminCommand("location", "- показывает текущую локацию", ((sender, args) -> {
             sender.sendMessage(ChatColor.GRAY + "Блок: " + ChatColor.WHITE + formatLocation(((Player) sender).getLocation()));
             sender.sendMessage(ChatColor.GRAY + "Чанк: " + ChatColor.WHITE + ((Player) sender).getLocation().getChunk().toString());
             return true;
         }));
 
-        registerAdminCommand("createWorld", "[name] - создать новый мир", (((sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("createWorld", "[name] - создать новый мир", (((sender, args) -> {
             if (args.length == 0) return false;
 
             World w = Bukkit.getWorld(args[0]);
@@ -88,7 +103,7 @@ public final class RedAge extends JavaPlugin implements Listener {
             return true;
         })));
 
-        registerAdminCommand("tpWorld", "[name] - телепортироваться в мир", ((sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("tpWorld", "[name] - телепортироваться в мир", ((sender, args) -> {
             if (args.length == 0) return false;
 
             World w = Bukkit.createWorld(new WorldCreator(args[0]));
@@ -98,7 +113,7 @@ public final class RedAge extends JavaPlugin implements Listener {
             return true;
         }));
 
-        registerAdminCommand("debug", "- переключить режим отладки", ((sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("debug", "- переключить режим отладки", ((sender, args) -> {
             Player p = (Player) sender;
 
             if (!loggers.contains(p)) {
@@ -112,16 +127,9 @@ public final class RedAge extends JavaPlugin implements Listener {
         }));
     }
 
-    private static void help(CommandSender sender) {
-        say(sender, "Доступные команды: ");
-        subCommands.forEach((s, adminSubCommand) -> say(sender, s + " " + descriptions.getOrDefault(s, "описание не найдено")));
-    }
 
-    public static void registerAdminCommand(String command, String description, AdminSubCommand e) {
-        subCommands.put(command.toLowerCase(), e);
-        descriptions.put(command.toLowerCase(), description);
-        log("Admin subcommand registered: " + command);
-    }
+
+    /* =================================        UTILS       ================================= */
 
     public static void log(String msg) {
         System.out.println(ChatColor.RED + "" + ChatColor.BOLD + "[RedAge] " + ChatColor.WHITE + msg);
@@ -148,14 +156,6 @@ public final class RedAge extends JavaPlugin implements Listener {
                 Double.parseDouble(split[2]),
                 Double.parseDouble(split[3])
         );
-    }
-
-    public static JavaPlugin getInstance() {
-        return instance;
-    }
-
-    public static Economy getEconomy() {
-        return economy;
     }
 }
 

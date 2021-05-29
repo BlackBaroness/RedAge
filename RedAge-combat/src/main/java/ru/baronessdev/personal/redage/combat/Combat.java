@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -46,6 +47,10 @@ public final class Combat extends JavaPlugin implements Listener {
             Arrays.stream(p.getInventory().getStorageContents())
                     .filter(Objects::nonNull)
                     .forEach(it -> p.getLocation().getWorld().dropItem(p.getLocation(), it));
+            Arrays.stream(p.getInventory().getArmorContents())
+                    .filter(Objects::nonNull)
+                    .forEach(it -> p.getLocation().getWorld().dropItem(p.getLocation(), it));
+
             p.getInventory().clear();
             p.setHealth(0.0);
 
@@ -57,16 +62,25 @@ public final class Combat extends JavaPlugin implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent e) {
         timers.remove(e.getEntity());
-        bars.remove(e.getEntity());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
+        Player p = e.getPlayer();
+        if (timers.containsKey(p)) {
+            RedAge.say(p, "Вы не можете использовать команды во время боя.");
+            e.setCancelled(true);
+        }
     }
 
     private void addCombatMode(Player p) {
         if (timers.containsKey(p)) {
-            timers.put(p, 15);
+            timers.put(p, 20);
+            bars.get(p).setProgress(1.0);
             return;
         }
 
-        BossBar bossBar = Bukkit.createBossBar("Вы в бою! Осталось: 20 секунд.", BarColor.YELLOW, BarStyle.SEGMENTED_20);
+        BossBar bossBar = Bukkit.createBossBar("Вы в бою!", BarColor.YELLOW, BarStyle.SEGMENTED_20);
         bossBar.setProgress(1.0);
 
         timers.put(p, 20);
@@ -83,12 +97,15 @@ public final class Combat extends JavaPlugin implements Listener {
                     return;
                 }
 
+                BossBar b = bars.get(p);
+
                 if (!timers.containsKey(p)) {
+                    b.removeAll();
+                    timers.remove(p);
+                    bars.remove(p);
                     cancel();
                     return;
                 }
-
-                BossBar b = bars.get(p);
 
                 if (timers.get(p) == 1) {
                     b.removeAll();

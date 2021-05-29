@@ -1,47 +1,109 @@
 package ru.baronessdev.personal.redage.kits;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.Default;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.redagemain.ACF;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
+import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public final class Kits extends JavaPlugin implements Listener {
+public final class Kits extends JavaPlugin {
 
     private final List<Kit> kits = new ArrayList<>();
 
     @Override
     public void onEnable() {
-        load();
         saveDefaultConfig();
+        load();
 
-        RedAge.registerAdminCommand("kit", "- перезагружает киты", (sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("kit", "- перезагружает киты", (sender, args) -> {
             load();
             RedAge.say(sender, "Киты перезагружены");
             return true;
         });
-        Bukkit.getPluginManager().registerEvents(this, this);
+
+        ACF.addCompletion("kits", c -> {
+            List<String> l = new ArrayList<>();
+            Player p = c.getPlayer();
+            kits.forEach(kit -> {
+                if (hasPermission(p, kit) && needTime(p, kit) == 0) {
+                    l.add(kit.getName());
+                }
+            });
+
+            return l;
+        });
+        ACF.addCommand(new KitCommand());
     }
 
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    private void onCommand(PlayerCommandPreprocessEvent e) {
-        Player p = e.getPlayer();
-        if (e.getMessage().equals("/kit")) {
-            e.setCancelled(true);
+
+    public int getEmptySlots(Player p) {
+        PlayerInventory inventory = p.getInventory();
+        ItemStack[] cont = inventory.getContents();
+        int i = 0;
+        for (ItemStack item : cont)
+            if (item != null && item.getType() != Material.AIR) {
+                i++;
+            }
+        return 36 - i;
+    }
+
+    public static boolean hasPermission(Player p, Kit kit) {
+        return p.hasPermission(kit.getName());
+    }
+
+    private Kit getKit(String s) {
+        return kits.stream().filter(kit -> kit.getName().equals(s)).findAny().orElse(null);
+    }
+
+    private long needTime(Player p, Kit k) {
+        long x = YamlConfiguration.loadConfiguration(new File(getDataFolder() + File.separator + "data.yml")).getLong(k.getName() + "." + p.getName());
+        if (x == 0) return 0;
+
+        long y = k.getDelay();
+        long z = System.currentTimeMillis();
+
+        return (z - y > x) ? 0 : ~(z - (x + y));
+    }
+
+    private void load() {
+        kits.clear();
+        reloadConfig();
+
+        getConfig().getKeys(false).forEach(s -> {
+            kits.add(new Kit(s, getConfig().getLong(s + ".timer"), getConfig().getStringList(s + ".list")));
+            RedAge.log("создаю кит: " + s);
+        });
+    }
+
+    @SuppressWarnings("unused")
+    @CommandAlias("kit|kits")
+    public class KitCommand extends BaseCommand {
+
+        @Default
+        public void unknown(Player p) {
             StringBuilder s = new StringBuilder();
             kits.forEach(kit -> {
-                if (hasPermission(p, kit)) {
+                if (Kits.hasPermission(p, kit)) {
                     s.append(" ")
-                            .append((hasTime(p, kit) ? ChatColor.GREEN : ChatColor.GRAY))
+                            .append((needTime(p, kit) == 0) ? ChatColor.GREEN : ChatColor.GRAY)
                             .append(kit.getName());
                 }
             });
@@ -53,55 +115,52 @@ public final class Kits extends JavaPlugin implements Listener {
 
 
             RedAge.say(p, "Доступные киты:" + s);
-            return;
         }
-        if (e.getMessage().startsWith("/kit ")) {
-            e.setCancelled(true);
 
-            Kit k = getKit(e.getMessage().split(" ")[1]);
+        @CommandCompletion("@kits")
+        @CatchUnknown
+        public void kit(Player p, String[] args) {
+            Kit k = getKit(args[0]);
             if (k == null) {
                 RedAge.say(p, "Указанный кит не найден. Введите " + ChatColor.RED + "/kit" + ChatColor.WHITE + ", чтобы посмотреть доступные.");
                 return;
             }
 
-            if (!hasPermission(p, k)) {
+            if (!Kits.hasPermission(p, k)) {
                 RedAge.say(p, "У вас нет доступа к этому киту.");
                 return;
             }
 
-            if (!hasTime(p, k)) {
-                RedAge.say(p, "Похоже, время сбора этого кита не пришло. Попробуйте завтра.");
+            long l = needTime(p, k);
+            if (l == 0) {
+                if (getEmptySlots(p) < k.getContain().size()) {
+                    RedAge.say(p, "Для использования этого кита вам нужно " + ChatColor.RED + k.getContain().size() + ChatColor.RESET + " пустых слотов.");
+                    return;
+                }
+
+                k.getContain().forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("{p}", p.getName())));
+
+                File f = new File(getDataFolder() + File.separator + "data.yml");
+                YamlConfiguration cfg = YamlConfiguration.loadConfiguration(f);
+                cfg.set(k.getName() + "." + p.getName(), System.currentTimeMillis());
+                ThreadUtil.execute(() -> {
+                    try {
+                        cfg.save(f);
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
+
+                RedAge.say(p, "Вам выдан кит " + ChatColor.RED + k.getName() + ChatColor.WHITE + ".");
                 return;
             }
 
-            k.getContain().forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("{P}", p.getName())));
-            getConfig().set(p.getName().toLowerCase() + "." + k.getName(), new Date().getDay());
-            saveConfig();
+            long last = TimeUnit.MILLISECONDS.toSeconds(l);
+            long hours = last / 3600;
+            long minutes = (last % 3600) / 60;
+            long seconds = last % 60;
 
-            RedAge.say(p, "Вам выдан кит " + ChatColor.RED + k.getName() + ChatColor.WHITE + ".");
+            RedAge.say(p, String.format("§fДо следующего использования: §c%d:%d:%d", hours, minutes, seconds));
         }
-    }
-
-    private boolean hasPermission(Player p, Kit kit) {
-        return p.hasPermission(kit.getName());
-    }
-
-    private Kit getKit(String s) {
-        return kits.stream().filter(kit -> kit.getName().equals(s)).findAny().orElse(null);
-    }
-
-    @SuppressWarnings("deprecation")
-    private boolean hasTime(Player p, Kit k) {
-        int d = getConfig().getInt(p.getName().toLowerCase() + "." + k.getName(), -1);
-        if (d == -1) return true;
-        return d != new Date().getDay();
-    }
-
-    private void load() {
-        kits.clear();
-        reloadConfig();
-
-        ConfigurationSection kitsSection = getConfig().getConfigurationSection("kits");
-        kitsSection.getKeys(false).forEach(s -> kits.add(new Kit(s, kitsSection.getStringList(s))));
     }
 }

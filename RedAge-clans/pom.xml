@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.baronessdev.redage.clans</groupId>
+    <groupId>ru.baronessdev.personal.redage.clans</groupId>
     <artifactId>redage-clans</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
@@ -43,16 +43,6 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <relocations>
-                                <relocation>
-                                    <pattern>co.aikar.commands</pattern>
-                                    <shadedPattern>ru.baronessdev.personal.clans.acf</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>co.aikar.locales</pattern>
-                                    <shadedPattern>ru.baronessdev.personal.clans.locales</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>

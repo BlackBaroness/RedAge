@@ -13,4 +13,8 @@ public class ThreadUtil {
         Bukkit.getScheduler().runTaskLater(RedAge.getInstance(), r, 20L * t);
         RedAge.log("Creating later task for " + t + "s");
     }
+
+    public static void runBukkitTask(Task task) {
+        Bukkit.getScheduler().runTask(RedAge.getInstance(), task::execute);
+    }
 }

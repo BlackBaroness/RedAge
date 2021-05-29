@@ -1,5 +1,7 @@
 package ru.baronessdev.personal.redage.money;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -10,6 +12,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.intellij.lang.annotations.Language;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.redage.redagemain.util.Task;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
@@ -28,47 +31,9 @@ public final class Money extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         connect();
 
-        RedAge.registerAdminCommand("redcoin", " - управление донат валютой", (player, args) -> {
-            if (args.length < 2) {
-                help(player);
-                return true;
-            }
-
-            Player v = Bukkit.getPlayer(args[1]);
-            if (v == null) {
-                player.sendMessage("игрок оффлайн");
-                help(player);
-                return true;
-            }
-
-            if (args[0].equals("get")) {
-                player.sendMessage(getBalance(v) + "");
-                return true;
-            }
-
-            if (args[0].equals("set") && args.length == 3) {
-                int newBalance;
-                try {
-                    newBalance = Integer.parseInt(args[2]);
-                } catch (NumberFormatException e) {
-                    player.sendMessage("дурак цифру пиши");
-                    return true;
-                }
-
-                setBalance(v, newBalance);
-                player.sendMessage("установлено");
-                return true;
-            }
-
-            help(player);
-            return false;
-        });
+        AdminACF.addCommand("redcoin", " - управление донат валютой", new RedCoinCommand());
     }
 
-    private void help(CommandSender s) {
-        s.sendMessage("/redage redcoin get [игрок] - получить баланс игрока (онлайн)");
-        s.sendMessage("/redage redcoin set [игрок] [баланс] - установить баланс игроку (онлайн)");
-    }
 
     private static void connect() {
         RedAge.log("Подключаюсь к MySQL");
@@ -175,5 +140,64 @@ public final class Money extends JavaPlugin implements Listener {
 
     private static void checkConnection() {
         if (!isConnected()) connect();
+    }
+
+
+    @SuppressWarnings("unused")
+    @CommandAlias("redage")
+    @Subcommand("redcoin")
+    static class RedCoinCommand extends BaseCommand {
+
+        @CatchUnknown
+        @Default
+        public void unknown(CommandSender sender) {
+            help(sender);
+        }
+
+        @CommandCompletion("@players")
+        @Subcommand("get")
+        public void get(CommandSender sender, String[] args) {
+            Player v = getPlayer(sender, args[0]);
+            if (v == null) return;
+
+            sender.sendMessage(getBalance(v) + "");
+        }
+
+        @CommandCompletion("@players")
+        @Subcommand("set")
+        public void set(CommandSender sender, String[] args) {
+            if (args.length != 2) {
+                help(sender);
+                return;
+            }
+
+            Player v = getPlayer(sender, args[0]);
+            if (v == null) return;
+
+            int newBalance;
+            try {
+                newBalance = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage("дурак цифру пиши");
+                return;
+            }
+
+            setBalance(v, newBalance);
+            sender.sendMessage("установлено");
+        }
+
+        private Player getPlayer(CommandSender s, String st) {
+            Player v = Bukkit.getPlayer(st);
+            if (v == null) {
+                s.sendMessage("игрок оффлайн");
+                return null;
+            }
+            return v;
+        }
+
+        private void help(CommandSender s) {
+            s.sendMessage("/redage redcoin get [игрок] - получить баланс игрока (онлайн)");
+            s.sendMessage("/redage redcoin set [игрок] [баланс] - установить баланс игроку (онлайн)");
+        }
     }
 }

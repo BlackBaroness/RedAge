@@ -1,5 +1,10 @@
 package ru.baronessdev.personal.redage.drops;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -12,11 +17,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
@@ -50,49 +57,10 @@ public final class Drops extends JavaPlugin implements Listener {
             return true;
         }));
 
-        RedAge.registerAdminCommand("drops", "- управление дропами", (sender, args) -> {
-            if (args.length == 0) {
-                adminHelp(sender);
-                return true;
-            }
-
-            switch (args[0]) {
-
-                case "start": {
-                    if (chest != null) {
-                        sender.sendMessage("Дроп уже создан");
-                        return true;
-                    }
-
-                    start();
-                    return true;
-                }
-
-                case "reset": {
-                    if (chest == null) {
-                        sender.sendMessage("Дроп не создан");
-                        return true;
-                    }
-
-                    timer = 4;
-                    return true;
-                }
-
-                case "cd": {
-                    cooldown.clear();
-                    return true;
-                }
-
-
-                default: {
-                    adminHelp(sender);
-                    return true;
-                }
-            }
-        });
+        AdminACF.addCommand("drops", "- управление дропами", new DropsCommand());
     }
 
-    private void start() {
+    private void spawn() {
         World world = Bukkit.getWorld("world");
         Location loc = null;
         items.clear();
@@ -145,7 +113,7 @@ public final class Drops extends JavaPlugin implements Listener {
                 String enchantment = split[j].split(":")[0];
                 int level = Integer.parseInt(split[j].split(":")[1]);
 
-                System.out.println("создаю енчант " + enchantment + ":" + level);
+                RedAge.log("создаю енчант " + enchantment + ":" + level);
                 item.addUnsafeEnchantment(Enchantment.getByName(enchantment), level);
             }
 
@@ -190,12 +158,6 @@ public final class Drops extends JavaPlugin implements Listener {
         runnable.runTaskTimer(RedAge.getInstance(), 0, 20);
     }
 
-    private void adminHelp(CommandSender s) {
-        s.sendMessage("§a/redage drops start§f - досрочно создаёт дроп, если ещё не создан");
-        s.sendMessage("§a/redage drops reset§f - досрочно снимает лок с дропа, если создан");
-        s.sendMessage("§a/redage drops cd§f - обнуляет кулдауны");
-
-    }
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent e) {
@@ -219,6 +181,60 @@ public final class Drops extends JavaPlugin implements Listener {
     public void onEntityExplode(EntityExplodeEvent e) {
         if (chest != null && e.blockList().contains(chest)) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        cooldown.remove(e.getEntity());
+    }
+
+    @SuppressWarnings("unused")
+    @CommandAlias("redage")
+    @Subcommand("drops")
+    class DropsCommand extends BaseCommand {
+
+        @CatchUnknown
+        @Default
+        public void unknown(CommandSender sender) {
+            help(sender);
+        }
+
+        @Subcommand("start")
+        public void start(CommandSender sender) {
+            if (chest != null) {
+                sender.sendMessage("Дроп уже создан");
+                return;
+            }
+
+            spawn();
+        }
+
+        @Subcommand("reset")
+        public void reset(CommandSender sender) {
+            if (chest == null) {
+                sender.sendMessage("Дроп не создан");
+                return;
+            }
+
+            timer = 4;
+        }
+
+        @Subcommand("cd")
+        public void cd(CommandSender sender) {
+            if (chest == null) {
+                sender.sendMessage("Дроп не создан");
+                return;
+            }
+
+            cooldown.clear();
+        }
+
+
+        private void help(CommandSender s) {
+            s.sendMessage("§a/redage drops start§f - досрочно создаёт дроп, если ещё не создан");
+            s.sendMessage("§a/redage drops reset§f - досрочно снимает лок с дропа, если создан");
+            s.sendMessage("§a/redage drops cd§f - обнуляет кулдауны");
         }
     }
 }

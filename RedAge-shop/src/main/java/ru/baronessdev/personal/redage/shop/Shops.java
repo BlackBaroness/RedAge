@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.redage.money.Money;
+import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public final class Shops extends JavaPlugin implements Listener {
         saveDefaultConfig();
         load();
 
-        RedAge.registerAdminCommand("shop", "- перезагружает все магазины", ((sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("shop", "- перезагружает все магазины", ((sender, args) -> {
             load();
             RedAge.say(sender, "Магазины перезагружены.");
             return true;
