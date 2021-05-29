@@ -71,6 +71,7 @@ public final class RedAge extends JavaPlugin implements Listener {
 
     private void setupACF() {
         AdminACF.setup(this);
+        ACF.setup(this);
     }
 
     private static final List<Player> loggers = new ArrayList<>();
