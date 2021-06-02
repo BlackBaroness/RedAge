@@ -5,6 +5,8 @@
 
 ## Настройка окружения
 
-`apt update`
-`apt upgrade`
-`apt install mariadb-server`
+```
+apt update
+apt upgrade
+apt install mariadb-server
+```
