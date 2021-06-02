@@ -39,9 +39,10 @@ public class ClanAdminCommand extends BaseCommand {
     public void delete(CommandSender sender, String[] args) {
         if (args.length != 1) {
             help(sender);
+            return;
         }
 
-        Clan clan = Data.getInstance().getClan(args[1]);
+        Clan clan = Data.getInstance().getClan(args[0]);
         if (ClansPlugin.clanNotExists(clan, sender)) return;
 
         Data.getInstance().deleteClan(clan);

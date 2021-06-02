@@ -77,6 +77,12 @@ public class ClanCommand extends BaseCommand {
             return;
         }
 
+        double balance = RedAge.getEconomy().getBalance(p);
+        if (balance < 3000) {
+            RedAge.say(p, "Вам не хватает " + (3000 - balance) + " для создания клана.");
+            return;
+        }
+
         List<String> members = new ArrayList<>();
         members.add(p.getName());
         Data.getInstance().createClan(new Clan(UUID.randomUUID(),

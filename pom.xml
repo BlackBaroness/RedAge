@@ -24,6 +24,7 @@
         <module>RedAge-buyer</module>
         <module>RedAge-clans</module>
         <module>RedAge-combat</module>
+        <module>RedAge-donate</module>
         <module>RedAge-drops</module>
         <module>RedAge-jobs</module>
         <module>RedAge-kits</module>

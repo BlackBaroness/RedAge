@@ -1,12 +1,15 @@
 package ru.baronessdev.personal.redage.redagemain;
 
 import lombok.Getter;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.baronessdev.personal.redage.redagemain.util.SmartMessagesUtil;
 
 import java.io.File;
 import java.sql.Connection;
@@ -14,8 +17,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public final class RedAge extends JavaPlugin implements Listener {
+public final class RedAge extends JavaPlugin {
 
     @Getter
     protected static JavaPlugin instance;
@@ -27,6 +31,8 @@ public final class RedAge extends JavaPlugin implements Listener {
         setupSqlite();
         setupACF();
         setupCommands();
+        setupListener();
+        setupMessages();
     }
 
     private void setupBase() {
@@ -46,6 +52,46 @@ public final class RedAge extends JavaPlugin implements Listener {
         economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
     }
 
+
+
+    /* =================================        СООБЩЕНИЯ       ================================= */
+
+    private void setupMessages() {
+        AtomicInteger i = new AtomicInteger(0);
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
+
+            switch (i.get()) {
+                case 0: {
+                    Bukkit.broadcastMessage("§4§l[RedAge] §f§lДля безопасной сделки используйте §c§l/trade");
+                    break;
+                }
+                case 1: {
+                    new SmartMessagesUtil("§4§l[RedAge] §f§lДонат можно приобрести на нашем сайте §с§lredage.su (/donate)")
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("§fКликай сюда!").create()))
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://redage.su/shop.html"))
+                            .broadcast();
+                    break;
+                }
+                case 2: {
+                    Bukkit.broadcastMessage("§4§l[RedAge] §f§lНа сервере присутствует аукцион §c§l/ah");
+                    break;
+                }
+                default: {
+                    i.set(-1);
+                }
+            }
+
+            i.incrementAndGet();
+        }, 0, 5 * 60 * 20);
+    }
+
+
+
+    /* =================================        ЭКОНОМИКА       ================================= */
+
+    private void setupListener() {
+        Bukkit.getPluginManager().registerEvents(new RedAgeListener(), this);
+    }
 
 
 
@@ -158,5 +204,7 @@ public final class RedAge extends JavaPlugin implements Listener {
                 Double.parseDouble(split[3])
         );
     }
+
+
 }
 

@@ -74,7 +74,7 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
         long x = coolDownMap.getOrDefault(p, 0L);
         if (x == 0) return 0;
 
-        long y = 120000;
+        long y = 20000;
         long z = System.currentTimeMillis();
 
         return (z - y > x) ? 0 : ~(z - (x + y));

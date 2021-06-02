@@ -9,7 +9,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "redageClans";
+        return "redageclans";
     }
 
     @Override
@@ -31,10 +31,9 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
         if (params.equals("clan")) {
             Clan c = Data.getInstance().getClan(p);
 
-            return " " +
-                    ((c == null)
-                            ? ""
-                            : "[" + c.getName() + "] ");
+            return ((c == null)
+                    ? ""
+                    : "[" + c.getName() + "] ");
         }
 
         return "";

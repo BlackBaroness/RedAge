@@ -1,0 +1,5 @@
+name: RedAge_Donate
+version: ${project.version}
+main: ru.baronessdev.personal.redage.donate.Donate
+depend:
+  - RedAge

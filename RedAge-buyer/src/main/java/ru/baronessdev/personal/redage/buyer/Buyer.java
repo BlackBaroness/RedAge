@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -26,7 +27,7 @@ public final class Buyer extends JavaPlugin implements Listener {
 
     private final int hour3 = 60 * 60 * 3;
     private int time = 0;
-    private final Inventory inv = Bukkit.createInventory(null, 9 * 6, "Скупщик");
+    private final Inventory inv = Bukkit.createInventory(null, 9 * 3, "Скупщик");
     private final HashMap<Material, Double> prices = new HashMap<>();
     private String location;
 
@@ -42,25 +43,6 @@ public final class Buyer extends JavaPlugin implements Listener {
                 time = 0;
                 ThreadUtil.runBukkitTask(this::update);
             }
-
-            int last = hour3 - time;
-            int hours = last / 3600;
-            int minutes = (last % 3600) / 60;
-
-            String hoursString = (hours != 0)
-                    ? (hours == 1)
-                    ? "1 час "
-                    : hours + " часов "
-                    : "";
-
-            String minutesString = (minutes != 0)
-                    ? minutes + " мин."
-                    : "";
-
-            String extra = (hoursString.equals("") && minutesString.equals("")) ? "менее минуты" : "";
-            String timeString = "§fДо обновления: §c" + hoursString + minutesString + extra;
-            ThreadUtil.runBukkitTask(() ->
-                    inv.setItem(40, new ItemBuilder(Material.COMPASS).setName("§cОбновление списка предложений").setLore(timeString).build()));
         }, 0, 60 * 20);
 
         AdminACF.registerSimpleAdminCommand("buyer", "- перезагружает скупщика", ((sender, args) -> {
@@ -79,6 +61,7 @@ public final class Buyer extends JavaPlugin implements Listener {
         reloadConfig();
         FileConfiguration cfg = getConfig();
         prices.clear();
+        inv.clear();
         location = cfg.getString("loc");
         Set<String> keysSet = cfg.getKeys(false);
         List<String> keysTest = new ArrayList<>(keysSet);
@@ -127,7 +110,7 @@ public final class Buyer extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     private void onClick(InventoryClickEvent e) {
         if (e.getClickedInventory() == null) return;
         if (e.getClickedInventory().getTitle() == null) return;
@@ -136,7 +119,6 @@ public final class Buyer extends JavaPlugin implements Listener {
 
         e.setCancelled(true);
 
-        if (e.getSlot() > 27) return;
         Material item = e.getCurrentItem().getType();
         Player p = (Player) e.getWhoClicked();
 

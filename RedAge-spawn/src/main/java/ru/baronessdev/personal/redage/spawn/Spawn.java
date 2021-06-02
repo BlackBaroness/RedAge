@@ -24,9 +24,8 @@ public final class Spawn extends JavaPlugin implements Listener {
 
         Player p = (Player) e.getEntity();
         if (p.getLocation().getWorld().getName().equals("spawn")) {
-            e.setCancelled(true);
-
             if (e.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                e.setCancelled(true);
                 new BukkitRunnable() {
                     public void run() {
                         p.teleport(p.getWorld().getSpawnLocation());
@@ -38,6 +37,7 @@ public final class Spawn extends JavaPlugin implements Listener {
             }
 
             if (e.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION) {
+                e.setCancelled(true);
                 p.teleport(p.getWorld().getSpawnLocation());
             }
         }

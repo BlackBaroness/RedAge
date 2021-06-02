@@ -14,7 +14,6 @@ import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public final class Bonus extends JavaPlugin {
@@ -41,6 +40,21 @@ public final class Bonus extends JavaPlugin {
         @CatchUnknown
         @Default
         public void use(Player p) {
+            int bonus = 0;
+
+            bonus = hasPermission(p, "warrior", 100);
+            bonus = (bonus == 0) ? hasPermission(p, "phantom", 150) : bonus;
+            bonus = (bonus == 0) ? hasPermission(p, "griefer", 200) : bonus;
+            bonus = (bonus == 0) ? hasPermission(p, "punisher", 250) : bonus;
+            bonus = (bonus == 0) ? hasPermission(p, "phoenix", 300) : bonus;
+            bonus = (bonus == 0) ? hasPermission(p, "ultra", 350) : bonus;
+            bonus = (bonus == 0) ? hasPermission(p, "dominator", 400) : bonus;
+
+            if (bonus == 0) {
+                RedAge.say(p, "Эта команда доступна только для донатеров.");
+                return;
+            }
+
             long needTime = needTime(p);
 
             if (needTime != 0) {
@@ -64,10 +78,15 @@ public final class Bonus extends JavaPlugin {
                 }
             });
 
-            int random = ThreadLocalRandom.current().nextInt(100, 1001);
-            RedAge.getEconomy().depositPlayer(p, random);
 
-            RedAge.say(p, ChatColor.GREEN + "Вы получили бонус в размере " + ChatColor.BOLD + random + ChatColor.RESET + ChatColor.GREEN + "$!");
+            RedAge.getEconomy().depositPlayer(p, bonus);
+
+            RedAge.say(p, ChatColor.GREEN + "Вы получили бонус в размере " + ChatColor.BOLD + bonus + ChatColor.RESET + ChatColor.GREEN + "$!");
+        }
+
+        private int hasPermission(Player p, String perm, int bonus) {
+            if (p.hasPermission("bonus." + perm)) return bonus;
+            return 0;
         }
     }
 }

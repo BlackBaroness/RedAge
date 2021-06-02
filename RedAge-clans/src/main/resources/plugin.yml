@@ -3,9 +3,8 @@ version: ${project.version}
 main: ru.baronessdev.personal.redage.clans.ClansPlugin
 depend:
   - RedAge
+  - RedAge_Money
   - PlaceholderAPI
 commands:
-  clan:
-    aliases: c
-  cc:
-    usage: /cc [сообщение]
+  cchat:
+    usage: /cchat [сообщение]

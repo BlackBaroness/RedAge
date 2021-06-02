@@ -12,7 +12,6 @@ import ru.baronessdev.personal.redage.clans.gui.GuiHandler;
 import ru.baronessdev.personal.redage.clans.obj.Clan;
 import ru.baronessdev.personal.redage.clans.util.ClanChatUtil;
 import ru.baronessdev.personal.redage.clans.war.WarListener;
-import ru.baronessdev.personal.redage.clans.war.WarManager;
 import ru.baronessdev.personal.redage.redagemain.ACF;
 import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
@@ -58,6 +57,12 @@ public final class ClansPlugin extends JavaPlugin {
                     .forEach(clan -> l.add(clan.getName()));
             return l;
         });
+        AdminACF.addCompletion("clans", c -> {
+            List<String> l = new ArrayList<>();
+            Data.getInstance().getClans().forEach(clan -> l.add(clan.getName()));
+            return l;
+        });
+
 
         // регистрация слушателя войны
         Bukkit.getPluginManager().registerEvents(new WarListener(), this);
@@ -68,14 +73,11 @@ public final class ClansPlugin extends JavaPlugin {
         // регистрация субкоманды /redage clans
         AdminACF.addCommand("clans", " - управление кланами", new ClanAdminCommand());
 
-        // регистрация менеджера войн
-        WarManager.setup();
-
         // регистрация papi плейсхолдеров
         new PlaceholderAPIHook().register();
 
         // регистрация /cc
-        getCommand("cc").setExecutor(((sender, command, label, args) -> {
+        getCommand("cchat").setExecutor(((sender, command, label, args) -> {
             if (!(sender instanceof Player)) return true;
             if (args.length == 0) return false;
 

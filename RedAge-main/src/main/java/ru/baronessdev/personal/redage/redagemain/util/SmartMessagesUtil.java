@@ -3,6 +3,7 @@ package ru.baronessdev.personal.redage.redagemain.util;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class SmartMessagesUtil {
@@ -21,6 +22,10 @@ public class SmartMessagesUtil {
     public SmartMessagesUtil setClickEvent(ClickEvent e) {
         message.setClickEvent(e);
         return this;
+    }
+
+    public void broadcast() {
+        Bukkit.spigot().broadcast(message);
     }
 
     public void send(Player p) {

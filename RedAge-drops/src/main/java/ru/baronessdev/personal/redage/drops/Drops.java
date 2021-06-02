@@ -38,7 +38,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Drops extends JavaPlugin implements Listener {
 
     private Block chest;
-    private final List<ItemStack> items = new ArrayList<>();
+    private List<ItemStack> items = new ArrayList<>();
     private long timer;
     private BossBar bossBar;
     private final List<Player> cooldown = new ArrayList<>();
@@ -63,7 +63,7 @@ public final class Drops extends JavaPlugin implements Listener {
     private void spawn() {
         World world = Bukkit.getWorld("world");
         Location loc = null;
-        items.clear();
+        items = new ArrayList<>();
 
         boolean normal = false;
         while (!normal) {
@@ -150,11 +150,14 @@ public final class Drops extends JavaPlugin implements Listener {
                 }
 
                 bossBar.setProgress(timer / 300.0);
-                bossBar.setTitle("До разблокировки дропа: " + timer + " сек.");
+                bossBar.setTitle("ОПАСНО! | До разблокировки дропа: " + timer + " сек. | /drop");
                 Bukkit.getOnlinePlayers().forEach(bossBar::addPlayer);
             }
         };
+
         RedAge.broadcast("Появился сундук с ценным лутом! Введи /drop, чтобы телепортироваться.");
+        RedAge.broadcast("§c§l[!] Осторожно! Вас могут убить.");
+
         runnable.runTaskTimer(RedAge.getInstance(), 0, 20);
     }
 
@@ -169,7 +172,7 @@ public final class Drops extends JavaPlugin implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e) {
-        if (cooldown.contains(e.getPlayer())) {
+        if (cooldown.contains(e.getPlayer()) && !e.getPlayer().hasPermission("admin")) {
             e.getPlayer().sendMessage(ChatColor.RED + "Вы не можете использовать команды до разблокировки дропа");
             e.getPlayer().sendMessage(ChatColor.RED + "                     и в течении 30с после разблокировки.");
 
