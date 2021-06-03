@@ -39,7 +39,7 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
         long need = needTime(p);
         if (needTime(p) != 0) {
             long last = TimeUnit.MILLISECONDS.toSeconds(need);
-            RedAge.say(p, String.format("§fВы сможете телепортироваться через: §c%d секунд", last));
+            RedAge.say(p, String.format("§fВы сможете телепортироваться через: §c%d2 секунд", last));
             return true;
         }
 
@@ -48,7 +48,8 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
 
         boolean normal = false;
         while (!normal) {
-            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(20000), ThreadLocalRandom.current().nextInt(20000)).getLocation();
+            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(7000), ThreadLocalRandom.current().nextInt(7000)).getLocation();
+            loc.setY(loc.getY() + 1);
             Block block;
 
             boolean checked = false;

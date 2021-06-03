@@ -96,7 +96,7 @@
             <version>LATEST</version>
             <scope>system</scope>
             <systemPath>
-                /home/baroness/Загрузки/BaronessAuth-v209.jar
+                ${basedir}/../lib/BaronessAuth.jar
             </systemPath>
         </dependency>
     </dependencies>

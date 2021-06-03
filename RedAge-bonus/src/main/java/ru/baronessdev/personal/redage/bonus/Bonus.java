@@ -40,7 +40,7 @@ public final class Bonus extends JavaPlugin {
         @CatchUnknown
         @Default
         public void use(Player p) {
-            int bonus = 0;
+            int bonus;
 
             bonus = hasPermission(p, "warrior", 100);
             bonus = (bonus == 0) ? hasPermission(p, "phantom", 150) : bonus;

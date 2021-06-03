@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.paid.auth.api.events.AuthPlayerLoginEvent;
+import ru.baronessdev.paid.auth.api.events.AuthPlayerSessionSavedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +34,19 @@ public final class Lobby extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAuthPlayerLogin(AuthPlayerLoginEvent e) {
-        commandMuted.add(e.getPlayer());
+        process(e.getPlayer());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onAuthPlayerLogin(AuthPlayerSessionSavedEvent e) {
+        process(e.getPlayer());
+    }
+
+    private void process(Player p) {
+        commandMuted.add(p);
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (e.getPlayer().isOnline()) e.getPlayer().kickPlayer("Пожалуйста, перезайдите через минуту.");
-            commandMuted.remove(e.getPlayer());
+            if (p.isOnline()) p.kickPlayer("Пожалуйста, перезайдите через минуту.");
+            commandMuted.remove(p);
         }, 60);
     }
 

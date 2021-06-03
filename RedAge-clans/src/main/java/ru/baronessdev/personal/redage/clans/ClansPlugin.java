@@ -1,5 +1,9 @@
 package ru.baronessdev.personal.redage.clans;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CatchUnknown;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Default;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -77,15 +81,7 @@ public final class ClansPlugin extends JavaPlugin {
         new PlaceholderAPIHook().register();
 
         // регистрация /cc
-        getCommand("cchat").setExecutor(((sender, command, label, args) -> {
-            if (!(sender instanceof Player)) return true;
-            if (args.length == 0) return false;
-
-            StringBuilder b = new StringBuilder();
-            Arrays.stream(args).forEach(s -> b.append(s).append(" "));
-            ClanChatUtil.process((Player) sender, b.toString());
-            return true;
-        }));
+        ACF.addCommand(new CCCommand());
     }
 
     public static boolean clanNotExists(Clan c, CommandSender s) {
@@ -96,5 +92,19 @@ public final class ClansPlugin extends JavaPlugin {
         return false;
     }
 
+    @CommandAlias("cc")
+    public class CCCommand extends BaseCommand {
 
+        @Default
+        public void base(Player p) {
+            p.sendMessage("/cc [сообщение] - написать в клановый чат");
+        }
+
+        @CatchUnknown
+        public void msg(Player p, String[] args) {
+            StringBuilder b = new StringBuilder();
+            Arrays.stream(args).forEach(s -> b.append(s).append(" "));
+            ClanChatUtil.process(p, b.toString());
+        }
+    }
 }

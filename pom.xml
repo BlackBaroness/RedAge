@@ -25,12 +25,13 @@
         <module>RedAge-clans</module>
         <module>RedAge-combat</module>
         <module>RedAge-donate</module>
+        <module>RedAge-lobby</module>
         <module>RedAge-drops</module>
         <module>RedAge-jobs</module>
         <module>RedAge-kits</module>
-        <!-- <module>RedAge-lobby</module> !-->
         <module>RedAge-RTP</module>
         <!-- <module>RedAge-shop</module> !-->
         <module>RedAge-spawn</module>
+        <module>RedAge-vk</module>
     </modules>
 </project>

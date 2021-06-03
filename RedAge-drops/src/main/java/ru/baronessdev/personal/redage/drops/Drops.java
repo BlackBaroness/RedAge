@@ -51,7 +51,28 @@ public final class Drops extends JavaPlugin implements Listener {
         getCommand("drop").setExecutor(((sender, command, label, args) -> {
             if (chest != null) {
                 Player p = (Player) sender;
-                p.teleport(chest.getLocation());
+
+                Location loc = null;
+                World world = chest.getWorld();
+
+                boolean normal = false;
+                while (!normal) {
+                    loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(chest.getX() - 10, chest.getX() + 10), ThreadLocalRandom.current().nextInt(chest.getZ() - 10, chest.getZ() + 10)).getLocation();
+                    Block block;
+
+                    boolean checked = false;
+                    int i = 1;
+                    while (!checked) {
+                        block = world.getBlockAt(loc.getBlockX(), loc.getBlockY() - i, loc.getBlockZ());
+                        if (block.getType() != Material.AIR) {
+                            checked = true;
+                            if (block.getType() != Material.STATIONARY_WATER && block.getType() != Material.WATER && block.getType() != Material.LAVA)
+                                normal = true;
+                        } else i++;
+                    }
+                }
+
+                p.teleport(loc);
                 cooldown.add(p);
             }
             return true;
@@ -67,7 +88,7 @@ public final class Drops extends JavaPlugin implements Listener {
 
         boolean normal = false;
         while (!normal) {
-            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(20000), ThreadLocalRandom.current().nextInt(20000)).getLocation();
+            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(7000), ThreadLocalRandom.current().nextInt(7000)).getLocation();
             Block block;
 
             boolean checked = false;

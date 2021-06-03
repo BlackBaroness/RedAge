@@ -34,9 +34,11 @@ public final class Donate extends JavaPlugin {
                     execute(true, "DELETE FROM `data` WHERE nick=" + nick);
                 }
 
-                hashMap.forEach((nick, group) ->
-                {
-                    String msh = "lp user " + nick + " parent add " + group;
+                hashMap.forEach((nick, group) -> {
+                    String msh = (group.contains("key-"))
+                            ? "crazycrates give V " + group.split("-")[1] + " " + group.split("-")[2]
+                            : "lp user " + nick + " parent add " + group;
+
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), msh);
                     RedAge.log(msh);
                 });

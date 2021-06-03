@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -132,6 +133,14 @@ public final class RedAge extends JavaPlugin {
             sender.sendMessage(ChatColor.GRAY + "Чанк: " + ChatColor.WHITE + ((Player) sender).getLocation().getChunk().toString());
             return true;
         }));
+
+        AdminACF.registerSimpleAdminCommand("broadcast", "- пишет сообщение всему серверу", ((sender, args) -> {
+            StringBuilder b = new StringBuilder();
+            Arrays.stream(args).forEach(s -> b.append(s).append(" "));
+            Bukkit.broadcastMessage(b.toString());
+            return true;
+        }));
+
 
         AdminACF.registerSimpleAdminCommand("createWorld", "[name] - создать новый мир", (((sender, args) -> {
             if (args.length == 0) return false;

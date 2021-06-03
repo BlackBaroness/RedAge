@@ -6,5 +6,5 @@ depend:
   - RedAge_Money
   - PlaceholderAPI
 commands:
-  cchat:
-    usage: /cchat [сообщение]
+  сс:
+    usage: /сс [сообщение]
