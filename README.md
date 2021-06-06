@@ -69,5 +69,5 @@ GRANT ALL ON donate_money.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED
 ```
 nano /etc/ssh/sshd_config
 Смена порта: Разкоментировать #port = 22 и сменить на любой порт 2 в степени 16 (0-65535)
-(скоро допишу остально)
+(скоро допишу остальное)
 ```
