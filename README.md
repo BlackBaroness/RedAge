@@ -7,7 +7,7 @@
 
 ```
 apt update
-apt upgrade
+apt-get dist-upgrade
 nano /etc/passwd # выдать 0:0 и сменить на bash
 cat /dev/null > /etc/motd
 apt install figlet
