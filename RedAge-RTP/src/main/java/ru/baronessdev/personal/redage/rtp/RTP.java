@@ -48,7 +48,7 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
 
         boolean normal = false;
         while (!normal) {
-            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(7000), ThreadLocalRandom.current().nextInt(7000)).getLocation();
+            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(-3000, 3000), ThreadLocalRandom.current().nextInt(-3000, 3000)).getLocation();
             loc.setY(loc.getY() + 1);
             Block block;
 
@@ -75,7 +75,7 @@ public final class RTP extends JavaPlugin implements CommandExecutor {
         long x = coolDownMap.getOrDefault(p, 0L);
         if (x == 0) return 0;
 
-        long y = 20000;
+        long y = 2000;
         long z = System.currentTimeMillis();
 
         return (z - y > x) ? 0 : ~(z - (x + y));

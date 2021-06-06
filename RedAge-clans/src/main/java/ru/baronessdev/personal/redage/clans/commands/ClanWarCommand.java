@@ -32,11 +32,13 @@ public class ClanWarCommand extends BaseCommand {
         p.sendMessage("/cw kick [игрок]" + ChatColor.RED + " - исключить игрока из команды для текущей войны;");
         p.sendMessage("/cw giveup" + ChatColor.RED + " - сдаться (моментальный проигрыш);");
         p.sendMessage("/cw gui" + ChatColor.RED + " - открыть меню клановой войны;");
+        /*
         p.sendMessage(" ");
         new SmartMessagesUtil("Вы можете узнать больше о системе войн, " + ChatColor.RED + "нажав сюда.")
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatColor.GREEN + "Узнать больше").create()))
                 .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://vk.com/baroness_dev"))
                 .send(p);
+         */
         p.sendMessage(ChatColor.RED + "╰━─━─━─━─━─━─" + ChatColor.WHITE + "━─━─━─━─━─━─━" + ChatColor.RED + "─━─━─━─━─━─━╯");
     }
 

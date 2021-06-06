@@ -9,7 +9,7 @@ public class PlaceholderAPIHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "redageclans";
+        return "redageClans";
     }
 
     @Override

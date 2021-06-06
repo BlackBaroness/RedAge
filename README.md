@@ -3,11 +3,20 @@
 - Во всех проектах прописать переменную desktop под название рабочего стола
 - Собирать через ALL проект: clean install package
 
-## Настройка окружения:
+## Настройка дистрибутива
 
 ```
 apt update
 apt upgrade
+nano /etc/passwd # выдать 0:0 и сменить на bash
+cat /dev/null > /etc/motd
+apt install figlet
+echo "figlet -ct -C utf8 -f banner матвей лох" > /etc/profile.d/salute.sh
+```
+
+## Настройка окружения:
+
+```
 apt install screen
 apt install java-common
 wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.deb
@@ -25,4 +34,18 @@ GRANT ALL ON *.* TO 'local_user'@'localhost' IDENTIFIED BY 'password' WITH GRANT
 GRANT ALL ON bauth_data.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED BY '664L5LmjUq9Ud39ZHCj2' WITH GRANT OPTION;
 GRANT ALL ON donate.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED BY '664L5LmjUq9Ud39ZHCj2' WITH GRANT OPTION;
 GRANT ALL ON donate_money.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED BY '664L5LmjUq9Ud39ZHCj2' WITH GRANT OPTION;
+```
+
+## Проброс ключей:
+
+```
+У СЕБЯ
+ssh-keygen -t rsa -q -N '' -f ~/.ssh/id_rsa
+scp -P ПОРТ ~/.ssh/id_rsa.pub ЮЗЕР@АДРЕС:~
+
+НА СЕРВЕРЕ
+[ -d ~/.ssh ] || (mkdir ~/.ssh; chmod 711 ~/.ssh)
+cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+rm ~/id_rsa.pub
 ```

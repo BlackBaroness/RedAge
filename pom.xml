@@ -25,7 +25,7 @@
         <module>RedAge-clans</module>
         <module>RedAge-combat</module>
         <module>RedAge-donate</module>
-        <module>RedAge-lobby</module>
+        <!--   <module>RedAge-lobby</module>     !-->
         <module>RedAge-drops</module>
         <module>RedAge-jobs</module>
         <module>RedAge-kits</module>
