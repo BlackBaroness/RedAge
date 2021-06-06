@@ -63,3 +63,11 @@ GRANT ALL ON bauth_data.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED B
 GRANT ALL ON donate.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED BY '664L5LmjUq9Ud39ZHCj2' WITH GRANT OPTION;
 GRANT ALL ON donate_money.* TO 'GwKqwDRZ5v2uS4WNI86I'@'31.31.196.189' IDENTIFIED BY '664L5LmjUq9Ud39ZHCj2' WITH GRANT OPTION;
 ```
+
+## Настройка SSH
+
+```
+nano /etc/ssh/sshd_config
+Смена порта: Разкоментировать #port = 22 и сменить на любой порт 2 в степени 16 (0-65535)
+(скоро допишу остально)
+```
