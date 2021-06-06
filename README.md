@@ -32,7 +32,8 @@ echo "figlet -ct -C utf8 -f banner матвей лох" > /etc/profile.d/salute.
 ## Создание юзера
 
 ```
-тут не хватает
+useradd [user_name]
+usermod -aG sudo [user_name]
 nano /etc/passwd # выдать 0:0 и сменить на bash
 ```
 
