@@ -1,10 +1,7 @@
 package ru.baronessdev.personal.redage.drops;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -88,7 +85,7 @@ public final class Drops extends JavaPlugin implements Listener {
 
         boolean normal = false;
         while (!normal) {
-            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(7000), ThreadLocalRandom.current().nextInt(7000)).getLocation();
+            loc = world.getHighestBlockAt(ThreadLocalRandom.current().nextInt(-3000, 3000), ThreadLocalRandom.current().nextInt(-3000, 3000)).getLocation();
             Block block;
 
             boolean checked = false;
@@ -216,6 +213,7 @@ public final class Drops extends JavaPlugin implements Listener {
     @SuppressWarnings("unused")
     @CommandAlias("redage")
     @Subcommand("drops")
+    @CommandPermission("admin")
     class DropsCommand extends BaseCommand {
 
         @CatchUnknown

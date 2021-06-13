@@ -37,13 +37,38 @@ usermod -aG sudo [user_name]
 nano /etc/passwd # выдать 0:0 и сменить на bash
 ```
 
-## Установка Screen и Java:
+## Установка Screen:
 
 ```
 apt install screen
+```
+
+## Установка Java 11:
+
+```
+## БАЗОВОЕ
 apt install java-common
+
+## AMAZON
 wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.deb
 dpkg --install amazon-corretto-11-x64-linux-jdk.deb
+
+## GRAALVM
+cd /
+mkdir java
+cd java
+wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+tar -xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+export PATH=/java/graalvm-ce-java11-21.1.0/bin:$PATH
+export JAVA_HOME=/java/graalvm-ce-java11-21.1.0/bin
+rm graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
+```
+
+## Установка IPSET
+
+```
+apt install module-assistant
+module-assistant auto-install xtables-addons-source
 ```
 
 ## Установка и настройка MySQL

@@ -12,6 +12,7 @@ import ru.baronessdev.personal.redage.redagemain.RedAge;
 @SuppressWarnings("unused")
 @CommandAlias("redage")
 @Subcommand("clans")
+@CommandPermission("admin")
 public class ClanAdminCommand extends BaseCommand {
 
     @CatchUnknown

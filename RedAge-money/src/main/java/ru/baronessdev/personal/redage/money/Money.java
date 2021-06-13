@@ -146,6 +146,7 @@ public final class Money extends JavaPlugin implements Listener {
     @SuppressWarnings("unused")
     @CommandAlias("redage")
     @Subcommand("redcoin")
+    @CommandPermission("admin")
     static class RedCoinCommand extends BaseCommand {
 
         @CatchUnknown
