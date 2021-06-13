@@ -54,17 +54,19 @@ wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.deb
 dpkg --install amazon-corretto-11-x64-linux-jdk.deb
 
 ## GRAALVM
-cd /bin/
+user=ПОЛЬЗОВАТЕЛЬ
+cd /home/$user/bin/
 mkdir java
 cd java
 wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
 tar -xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-cp -r graalvm-ce-java11-21.1.0/. /bin/java/
-export JAVA_HOME=/java/bin
+cp -r graalvm-ce-java11-21.1.0/. /home/$user/bin/java/
+export JAVA_HOME=/home/$user/bin/java/bin
 rm graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
 rm -R graalvm-ce-java11-21.1.0
-export PATH=/bin/java/bin:$PATH
-export JAVA_HOME=/bin/java/bin
+export PATH=/home/$user/bin/java/bin:$PATH
+export JAVA_HOME=/home/$user/bin/java/bin
+java -version
 ```
 
 ## Установка IPSET
