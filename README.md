@@ -72,6 +72,7 @@ export JAVA_HOME=/bin/java/bin
 ```
 apt install module-assistant
 module-assistant auto-install xtables-addons-source
+# Последняя команда вызывает фейлы. Игнорируем - жмём ESC, пока не пропадут.
 ```
 
 ## Установка и настройка MySQL
