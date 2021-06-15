@@ -22,8 +22,7 @@ rm ~/id_rsa.pub
 ## Первоначальные действия
 
 ```
-apt update
-apt-get dist-upgrade
+apt-get -y update && apt-get -y dist-upgrade
 cat /dev/null > /etc/motd
 apt install figlet
 echo "figlet -ct -C utf8 -f banner матвей лох" > /etc/profile.d/salute.sh
@@ -52,20 +51,20 @@ apt install java-common
 ## AMAZON
 wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.deb
 dpkg --install amazon-corretto-11-x64-linux-jdk.deb
+rm amazon-corretto-11-x64-linux-jdk.deb
+java -version
 
 ## GRAALVM
-user=ПОЛЬЗОВАТЕЛЬ
-cd /home/$user/bin/
-mkdir java
-cd java
+mkdir -p ~/bin/ && cd ~/bin/ && mkdir -p java && cd java
 wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
 tar -xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-cp -r graalvm-ce-java11-21.1.0/. /home/$user/bin/java/
-export JAVA_HOME=/home/$user/bin/java/bin
+cp -r graalvm-ce-java11-21.1.0/. ~/bin/java/
 rm graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
 rm -R graalvm-ce-java11-21.1.0
-export PATH=/home/$user/bin/java/bin:$PATH
-export JAVA_HOME=/home/$user/bin/java/bin
+export PATH=~/bin/java/bin:$PATH
+export JAVA_HOME=~/bin/java/bin
+echo "export PATH=~/bin/java/bin:$PATH" >> ~/.bashrc
+echo "export JAVA_HOME=~/bin/java/bin" >> ~/.bashrc
 java -version
 ```
 

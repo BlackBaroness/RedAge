@@ -8,13 +8,20 @@ PASSWORD=bGHQPwk3OOtG
 apt install -y p7zip-full lftp
 
 # сборка всех серверов в архив
+mysqldump -u root -pPassword --all-databases > databases.sql
 TIME=$(date +%F-%T)
-7z a "$TIME".7z proxy lobby server-1
+7z a "$TIME".7z proxy lobby server-1 databases.sql
 
 # отправка
 lftp ftp://$USER:$PASSWORD@backup.s1.fsn.spacecore.pro:21 -e "set ftp:ssl-allow no; put -O / $TIME.7z; quit"
 
 # чистка мусора
 rm "$TIME".7z
+rm databases.sql
+
+# аплодисменты
+echo "=========================================="
+echo "             БЭКАП ЗАВЕРШЕН               "
+echo "=========================================="
 
 exit 0;
