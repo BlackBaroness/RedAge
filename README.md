@@ -71,16 +71,16 @@ java -version
 ## Установка IPSET
 
 ```
-apt install module-assistant
-module-assistant auto-install xtables-addons-source
-# Последняя команда вызывает фейлы. Игнорируем - жмём ESC, пока не пропадут.
+apt install -y ipset
 ```
 
 ## Установка и настройка MySQL
 
 ```
-apt install mariadb-server
+apt install -y mariadb-server
 mysql_secure_installation
+nano /etc/mysql/mariadb.conf.d/50-server.cnf # заменить адрес на 0.0.0.0
+systemctl restart mysql
 mysql -u root -p
 
 CREATE DATABASE advanced_bans;
