@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -28,10 +29,23 @@ public class WarListener implements Listener {
         Clan c = Data.getInstance().getClan(p);
 
         Player killer = p.getKiller();
-        if (killer != null) Data.getInstance().addKillCount(killer);
+        if (killer != null) {
+            Data.getInstance().addKillCount(killer);
+        }
 
         e.setDeathMessage(p.getName() + " погиб в бою. " + ChatColor.RED + "[" + ((c != null) ? c.getName() : "неизвестный клан") + "]");
         WarManager.finishWar(false);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
+            Player p = (Player) e.getEntity();
+            if (!p.getLocation().getWorld().getName().equals("warWorld")) return;
+            Clan c1 = Data.getInstance().getClan(p);
+            Clan c2 = Data.getInstance().getClan((Player) e.getDamager());
+            if (c1 == c2) e.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true)

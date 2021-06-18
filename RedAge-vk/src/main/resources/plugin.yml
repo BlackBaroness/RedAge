@@ -1,3 +1,7 @@
 name: RedAge_VK
 version: ${project.version}
 main: ru.baronessdev.personal.redage.vk.VK
+commands:
+  redagestaff:
+    permission: redagestaff
+    usage: /redagestaff

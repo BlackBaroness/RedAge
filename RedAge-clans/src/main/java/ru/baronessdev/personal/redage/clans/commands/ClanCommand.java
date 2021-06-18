@@ -83,6 +83,7 @@ public class ClanCommand extends BaseCommand {
             return;
         }
 
+        RedAge.getEconomy().withdrawPlayer(p, 3000);
         List<String> members = new ArrayList<>();
         members.add(p.getName());
         Data.getInstance().createClan(new Clan(UUID.randomUUID(),
