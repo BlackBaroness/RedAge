@@ -25,7 +25,7 @@ rm ~/id_rsa.pub
 apt-get -y update && apt-get -y dist-upgrade
 cat /dev/null > /etc/motd
 apt install figlet
-echo "figlet -ct -C utf8 -f banner матвей лох" > /etc/profile.d/salute.sh
+echo "figlet -ct -C utf8 -f banner хочу пива" > /etc/profile.d/salute.sh
 ```
 
 ## Создание юзера
@@ -63,8 +63,8 @@ rm graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
 rm -R graalvm-ce-java11-21.1.0
 export PATH=~/bin/java/bin:$PATH
 export JAVA_HOME=~/bin/java/bin
-echo "export PATH=~/bin/java/bin:$PATH" >> ~/.bash_profile
-echo "export JAVA_HOME=~/bin/java/bin" >> ~/.bash_profile
+echo "export PATH=~/bin/java/bin:$PATH" >> .bash_profile
+echo "export JAVA_HOME=~/bin/java/bin" >> .bash_profile
 java -version
 ```
 
