@@ -63,8 +63,8 @@ rm graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
 rm -R graalvm-ce-java11-21.1.0
 export PATH=~/bin/java/bin:$PATH
 export JAVA_HOME=~/bin/java/bin
-echo "export PATH=~/bin/java/bin:$PATH" >> ~/.bashrc
-echo "export JAVA_HOME=~/bin/java/bin" >> ~/.bashrc
+echo "export PATH=~/bin/java/bin:$PATH" >> ~/.bash_profile
+echo "export JAVA_HOME=~/bin/java/bin" >> ~/.bash_profile
 java -version
 ```
 
