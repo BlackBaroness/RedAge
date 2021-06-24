@@ -19,61 +19,6 @@ chmod 600 ~/.ssh/authorized_keys
 rm ~/id_rsa.pub
 ```
 
-## Первоначальные действия
-
-```
-apt-get -y update && apt-get -y dist-upgrade
-cat /dev/null > /etc/motd
-apt install figlet
-echo "figlet -ct -C utf8 -f banner хочу пива" > /etc/profile.d/salute.sh
-```
-
-## Создание юзера
-
-```
-useradd [user_name]
-usermod -aG sudo [user_name]
-nano /etc/passwd # выдать 0:0 и сменить на bash
-```
-
-## Установка Screen:
-
-```
-apt install screen
-```
-
-## Установка Java 11:
-
-```
-## БАЗОВОЕ
-apt install java-common
-
-## AMAZON
-wget https://corretto.aws/downloads/latest/amazon-corretto-11-x64-linux-jdk.deb
-dpkg --install amazon-corretto-11-x64-linux-jdk.deb
-rm amazon-corretto-11-x64-linux-jdk.deb
-java -version
-
-## GRAALVM
-mkdir -p ~/bin/ && cd ~/bin/ && mkdir -p java && cd java
-wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-tar -xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-cp -r graalvm-ce-java11-21.1.0/. ~/bin/java/
-rm graalvm-ce-java11-linux-amd64-21.1.0.tar.gz
-rm -R graalvm-ce-java11-21.1.0
-export PATH=~/bin/java/bin:$PATH
-export JAVA_HOME=~/bin/java/bin
-echo "export PATH=~/bin/java/bin:$PATH" >> .bash_profile
-echo "export JAVA_HOME=~/bin/java/bin" >> .bash_profile
-java -version
-```
-
-## Установка IPSET
-
-```
-apt install -y ipset
-```
-
 ## Установка и настройка MySQL
 
 ```
