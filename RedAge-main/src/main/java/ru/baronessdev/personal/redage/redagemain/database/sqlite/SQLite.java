@@ -1,6 +1,7 @@
-package ru.baronessdev.personal.redage.redagemain.database;
+package ru.baronessdev.personal.redage.redagemain.database.sqlite;
 
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
 import ru.baronessdev.personal.redage.redagemain.util.Task;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
@@ -16,9 +17,11 @@ public class SQLite {
     private final Consumer<Connection> connectTask;
     private final Connection connection = RedAge.sqlite;
     private final String tableName;
+    private final JavaPlugin plugin;
 
-    public SQLite(String tableName, List<Column> columns, List<String> extra, List<String> indexes) {
+    protected SQLite(String tableName, List<Column> columns, List<String> extra, List<String> indexes, JavaPlugin plugin) {
         this.tableName = tableName;
+        this.plugin = plugin;
 
         final StringBuilder builder = new StringBuilder("CREATE TABLE IF NOT EXISTS `" + tableName + "` (");
         columns.forEach(builder::append);
@@ -39,7 +42,7 @@ public class SQLite {
         synchronized (SQLite.class) {
             for (String query : queries) {
                 query = setPlaceholder(query);
-                System.out.println(ChatColor.AQUA + query);
+                log(query);
                 String finalQuery = query;
                 Task task = () -> {
                     checkConnection();
@@ -60,7 +63,7 @@ public class SQLite {
 
     public ResultSet executeQuery(String query) {
         query = setPlaceholder(query);
-        System.out.println(ChatColor.AQUA + query);
+        log(query);
         checkConnection();
         ResultSet rs = null;
         try {
@@ -86,5 +89,9 @@ public class SQLite {
 
     private void checkConnection() {
         if (!isConnected()) connectTask.accept(connection);
+    }
+
+    private void log(String query) {
+        System.out.println(ChatColor.LIGHT_PURPLE + "[SQLite] " + ChatColor.AQUA + "[" + plugin.getClass().getSimpleName() + "] " + query);
     }
 }

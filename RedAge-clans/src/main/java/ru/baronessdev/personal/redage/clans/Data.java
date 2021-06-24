@@ -4,13 +4,14 @@ import lombok.SneakyThrows;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.redage.clans.enums.ChangeType;
 import ru.baronessdev.personal.redage.clans.obj.Clan;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
-import ru.baronessdev.personal.redage.redagemain.database.Column;
-import ru.baronessdev.personal.redage.redagemain.database.ColumnType;
-import ru.baronessdev.personal.redage.redagemain.database.SQLite;
-import ru.baronessdev.personal.redage.redagemain.database.SQLiteBuilder;
+import ru.baronessdev.personal.redage.redagemain.database.sqlite.Column;
+import ru.baronessdev.personal.redage.redagemain.database.sqlite.ColumnType;
+import ru.baronessdev.personal.redage.redagemain.database.sqlite.SQLite;
+import ru.baronessdev.personal.redage.redagemain.database.sqlite.SQLiteBuilder;
 import ru.baronessdev.personal.redage.redagemain.util.BooleanUtil;
 import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
@@ -49,8 +50,9 @@ public class Data {
 
     @SneakyThrows
     protected void setup() {
+        JavaPlugin plugin = ClansPlugin.plugin;
         // загрузка базы данных с кланами
-        clansDatabase = new SQLiteBuilder("clans_clans")
+        clansDatabase = new SQLiteBuilder(plugin, "clans_clans")
                 .addColumn(new Column("prefix", ColumnType.VARCHAR.setSize(20)).setDefaultValue(""))
                 .addColumn(new Column("name", ColumnType.VARCHAR.setSize(100)))
                 .addColumn(new Column("uuid", ColumnType.VARCHAR.setSize(100)))
@@ -65,7 +67,7 @@ public class Data {
                 .build();
 
         // загрузка базы данных с участниками
-        membersDatabase = new SQLiteBuilder("clans_members")
+        membersDatabase = new SQLiteBuilder(plugin, "clans_members")
                 .addColumn(new Column("name", ColumnType.VARCHAR.setSize(100)))
                 .addColumn(new Column("uuid", ColumnType.VARCHAR.setSize(100)))
                 .addPrimaryKey("name")
@@ -73,7 +75,7 @@ public class Data {
                 .build();
 
         // загрузка базы данных с топом убийств
-        topKillsDatabase = new SQLiteBuilder("clans_top_kills")
+        topKillsDatabase = new SQLiteBuilder(plugin, "clans_top_kills")
                 .addColumn(new Column("name", ColumnType.VARCHAR.setSize(100)))
                 .addColumn(new Column("count", ColumnType.BIGINT))
                 .addPrimaryKey("name")

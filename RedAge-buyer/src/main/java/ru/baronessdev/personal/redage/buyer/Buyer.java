@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
-import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public final class Buyer extends JavaPlugin implements Listener {
 
     private final int hour3 = 60 * 60 * 3;
     private int time = 0;
-    private final Inventory inv = Bukkit.createInventory(null, 9 * 3, "Скупщик");
+    private final Inventory inv = Bukkit.createInventory(null, 9 * 6, "Скупщик");
     private final HashMap<Material, Double> prices = new HashMap<>();
     private String location;
 
@@ -37,13 +36,21 @@ public final class Buyer extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         load();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+        Bukkit.getScheduler().runTaskTimer(this, () -> {
             time = time + 1;
             if (time == hour3) {
                 time = 0;
-                ThreadUtil.runBukkitTask(this::update);
+                update();
             }
-        }, 0, 60 * 20);
+
+            int last = hour3 - time;
+            int hours = last / 3600;
+            int minutes = (last % 3600) / 60;
+            int seconds = last % 60;
+            String timeString = String.format("§fДо обновления: §c%02d:%02d:%02d", hours, minutes, seconds);
+            inv.setItem(40, new ItemBuilder(Material.COMPASS).setName("§cОбновление списка предложений").setLore(timeString).build());
+        }, 0, 20);
+
 
         AdminACF.registerSimpleAdminCommand("buyer", "- перезагружает скупщика", ((sender, args) -> {
             update();
@@ -99,6 +106,20 @@ public final class Buyer extends JavaPlugin implements Listener {
             ).build());
             prices.put(material, price);
             i++;
+        }
+
+        for (int j = 27; j < 40; j++) {
+            inv.setItem(j, new ItemBuilder(Material.STAINED_GLASS_PANE)
+                    .setName(" ")
+                    .setLore(" ")
+                    .build());
+        }
+
+        for (int j = 40; j < 9 * 6; j++) {
+            inv.setItem(j, new ItemBuilder(Material.STAINED_GLASS_PANE)
+                    .setName(" ")
+                    .setLore(" ")
+                    .build());
         }
     }
 

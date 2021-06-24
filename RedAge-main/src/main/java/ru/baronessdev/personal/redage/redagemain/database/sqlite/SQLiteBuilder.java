@@ -1,16 +1,20 @@
-package ru.baronessdev.personal.redage.redagemain.database;
+package ru.baronessdev.personal.redage.redagemain.database.sqlite;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteBuilder {
 
+    private final JavaPlugin plugin;
     private final String tableName;
     private final List<Column> columnList = new ArrayList<>();
     private final List<String> extra = new ArrayList<>();
     private final List<String> indexList = new ArrayList<>();
 
-    public SQLiteBuilder(String tableName) {
+    public SQLiteBuilder(JavaPlugin plugin, String tableName) {
+        this.plugin = plugin;
         this.tableName = tableName;
     }
 
@@ -38,6 +42,6 @@ public class SQLiteBuilder {
     }
 
     public SQLite build() {
-        return new SQLite(tableName, columnList, extra, indexList);
+        return new SQLite(tableName, columnList, extra, indexList, plugin);
     }
 }

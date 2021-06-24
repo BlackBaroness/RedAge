@@ -29,6 +29,7 @@
         <module>RedAge-drops</module>
         <module>RedAge-jobs</module>
         <module>RedAge-kits</module>
+        <module>RedAge-promo</module>
         <module>RedAge-RTP</module>
         <!-- <module>RedAge-shop</module> !-->
         <module>RedAge-spawn</module>

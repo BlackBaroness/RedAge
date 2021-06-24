@@ -1,10 +1,7 @@
 package ru.baronessdev.personal.redage.kits;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CatchUnknown;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -33,7 +30,7 @@ public final class Kits extends JavaPlugin {
         saveDefaultConfig();
         load();
 
-        AdminACF.registerSimpleAdminCommand("kit", "- перезагружает киты", (sender, args) -> {
+        AdminACF.registerSimpleAdminCommand("kit-reload", "- перезагружает киты", (sender, args) -> {
             load();
             RedAge.say(sender, "Киты перезагружены");
             return true;
@@ -51,18 +48,22 @@ public final class Kits extends JavaPlugin {
             return l;
         });
         ACF.addCommand(new KitCommand());
-    }
 
+        AdminACF.registerSimpleAdminCommand("kit", "[кит] [игрок] - выдаёт кит", ((sender, args) -> {
+            if (args.length != 2) return false;
 
-    public int getEmptySlots(Player p) {
-        PlayerInventory inventory = p.getInventory();
-        ItemStack[] cont = inventory.getContents();
-        int i = 0;
-        for (ItemStack item : cont)
-            if (item != null && item.getType() != Material.AIR) {
-                i++;
+            Kit k = getKit(args[0]);
+            if (k == null) {
+                sender.sendMessage("Кит не найден");
+                return true;
             }
-        return 36 - i;
+
+            Player p = Bukkit.getPlayer(args[1]);
+            k.getContain().forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("{p}", p.getName())));
+
+            sender.sendMessage("Кит выдан");
+            return true;
+        }));
     }
 
     public static boolean hasPermission(Player p, Kit kit) {
@@ -133,11 +134,6 @@ public final class Kits extends JavaPlugin {
 
             long l = needTime(p, k);
             if (l == 0) {
-                if (getEmptySlots(p) < k.getContain().size()) {
-                    RedAge.say(p, "Для использования этого кита вам нужно " + ChatColor.RED + k.getContain().size() + ChatColor.RESET + " пустых слотов.");
-                    return;
-                }
-
                 k.getContain().forEach(s -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), s.replace("{p}", p.getName())));
 
                 File f = new File(getDataFolder() + File.separator + "data.yml");

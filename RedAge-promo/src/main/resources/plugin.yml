@@ -1,3 +1,5 @@
 name: RedAge_Promo
 version: ${project.version}
 main: ru.baronessdev.personal.redage.promo.Promocodes
+depend:
+  - RedAge

@@ -11,20 +11,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.intellij.lang.annotations.Language;
 import ru.baronessdev.personal.redage.redagemain.AdminACF;
 import ru.baronessdev.personal.redage.redagemain.RedAge;
-import ru.baronessdev.personal.redage.redagemain.util.Task;
-import ru.baronessdev.personal.redage.redagemain.util.ThreadUtil;
+import ru.baronessdev.personal.redage.redagemain.database.mysql.MySQL;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class Money extends JavaPlugin implements Listener {
 
-    private static Connection connection;
+    private static MySQL database;
 
     @Override
     public void onEnable() {
@@ -34,21 +30,11 @@ public final class Money extends JavaPlugin implements Listener {
         AdminACF.addCommand("redcoin", " - управление донат валютой", new RedCoinCommand());
     }
 
-
-    private static void connect() {
+    private void connect() {
         RedAge.log("Подключаюсь к MySQL");
-        try {
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/donate_money",
-                    "local_user",
-                    "password"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return;
-        }
+        database = new MySQL(this, "localhost", 3306, "donate_money", "local_user", "password");
 
-        execute(false, "CREATE TABLE IF NOT EXISTS `data` (" +
+        database.execute(false, "CREATE TABLE IF NOT EXISTS `data` (" +
                 "`nick` varchar(30) NOT NULL," +
                 "`balance` INT," +
                 "PRIMARY KEY (`nick`) USING BTREE" +
@@ -85,7 +71,7 @@ public final class Money extends JavaPlugin implements Listener {
     }
 
     public static int getBalance(Player p) {
-        ResultSet s = executeQuery("SELECT `balance` FROM `data` WHERE `nick`=\"" + p.getName() + "\"");
+        ResultSet s = database.executeQuery("SELECT `balance` FROM `data` WHERE `nick`=\"" + p.getName() + "\"");
         try {
             if (s.next()) {
                 return s.getInt("balance");
@@ -97,49 +83,8 @@ public final class Money extends JavaPlugin implements Listener {
     }
 
     public static void setBalance(Player p, int balance) {
-        execute(false, "DELETE FROM `data` WHERE `nick`=\"" + p.getName() + "\"");
-        execute(true, "INSERT INTO `data` (`nick`, `balance`) VALUES ('" + p.getName() + "', " + balance + ");");
-    }
-
-    private static void execute(boolean async, @Language("SQL") String query) {
-        System.out.println(ChatColor.AQUA + query);
-        Task task = () -> {
-            checkConnection();
-            try {
-                connection.createStatement().execute(query);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        };
-
-        if (async) {
-            ThreadUtil.execute(task);
-        } else task.execute();
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static ResultSet executeQuery(@Language("SQL") String query) {
-        System.out.println(ChatColor.AQUA + query);
-        checkConnection();
-        ResultSet rs = null;
-        try {
-            rs = connection.createStatement().executeQuery(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rs;
-    }
-
-    private static boolean isConnected() {
-        try {
-            return !connection.isClosed();
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-
-    private static void checkConnection() {
-        if (!isConnected()) connect();
+        database.execute(false, "DELETE FROM `data` WHERE `nick`=\"" + p.getName() + "\"");
+        database.execute(true, "INSERT INTO `data` (`nick`, `balance`) VALUES ('" + p.getName() + "', " + balance + ");");
     }
 
 

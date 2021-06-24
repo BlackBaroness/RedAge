@@ -1,4 +1,4 @@
-package ru.baronessdev.personal.redage.redagemain.database;
+package ru.baronessdev.personal.redage.redagemain.database.sqlite;
 
 public enum ColumnType {
 
