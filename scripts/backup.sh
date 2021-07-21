@@ -25,8 +25,8 @@ rm databases.sql
 # вывод логов
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME ))
-MINUTES=$((total_time / 60))
-SECONDS=$((total_time % 60))
+MINUTES=$((TOTAL_TIME / 60))
+SECONDS=$((TOTAL_TIME % 60))
 
 echo ""
 echo "Backup completed in $MINUTES:$SECONDS"
