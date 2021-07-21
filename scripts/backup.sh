@@ -13,7 +13,7 @@ apt install -y p7zip-full lftp &&
 # сборка всех серверов в архив
 mysqldump -u root -pPassword --all-databases > databases.sql &&
 TIME=$(date +%F-%T)
-7z a "$TIME".7z proxy lobby server-1 databases.sql 2> backupLogs/"$TIME".log &&
+7z a "$TIME".7z proxy lobby server-1 databases.sql &&
 
 # отправка
 lftp ftp://$USER:$PASSWORD@backup.s1.fsn.spacecore.pro:21 -e "set ftp:ssl-allow no; put -O / $TIME.7z; quit" &&
