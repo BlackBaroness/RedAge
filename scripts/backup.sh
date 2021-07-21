@@ -14,7 +14,7 @@ mkdir -p backupLogs
 apt install -y p7zip-full lftp &&
 
 # сборка всех серверов в архив
-#mysqldump -u root -pPassword --all-databases > databases.sql &&
+mysqldump -u root -pPassword --all-databases > databases.sql &&
 TIME=$(date +%F-%T)
 7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on "$TIME".7z proxy lobby server-1 databases.sql 2> backupLogs/"$TIME".log &&
 
