@@ -7,9 +7,6 @@ PASSWORD=bGHQPwk3OOtG
 # начало отсчёта
 START_TIME=$(date +%s)
 
-# создание папки логов
-mkdir -p backupLogs
-
 # установка нужных утилит
 apt install -y p7zip-full lftp &&
 
@@ -30,12 +27,9 @@ END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME ))
 MINUTES=$((total_time / 60))
 SECONDS=$((total_time % 60))
-LOGSTRING="Backup completed in $MINUTES:$SECONDS"
 
 echo ""
-echo "$LOGSTRING"
-echo ""  >> backupLogs/"$TIME".log
-echo "$LOGSTRING" >> backupLogs/"$TIME".log
+echo "Backup completed in $MINUTES:$SECONDS"
 
 exit 0; 
 
